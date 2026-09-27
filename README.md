@@ -11,6 +11,24 @@ Windows ve macOS için Git'i değiştirmeyen, ama Git'in korkutucu taraflarını
 
 ![Workspace](docs/screenshots/03-workspace-commit.png)
 
+## İndir
+
+**[→ Son sürümü indir (Releases)](https://github.com/makdemir08/ArChrono/releases/latest)**
+
+| Sistem | Dosya |
+|---|---|
+| Mac — Apple Silicon (M1/M2/M3/M4) | `ArChrono-<sürüm>-macOS-AppleSilicon.dmg` |
+| Mac — Intel | `ArChrono-<sürüm>-macOS-Intel.dmg` |
+| Windows 10/11 (x64) | `ArChrono-<sürüm>-Windows-x64-Setup.exe` veya `-Portable.zip` |
+| Windows 11 on ARM | `ArChrono-<sürüm>-Windows-ARM64-Setup.exe` veya `-Portable.zip` |
+
+Gereksinim: Git 2.38+ (Windows'ta [Git for Windows](https://git-scm.com/download/win)). Paketler henüz imzasız:
+macOS'ta ilk açılışta **Sistem Ayarları → Gizlilik ve Güvenlik → Yine de Aç**, Windows SmartScreen'de **Ek bilgi → Yine de çalıştır**.
+
+Yeni sürüm yayınlamak: `Directory.Build.props` içindeki `<Version>`'ı artırıp aynı numarayla etiket gönderin
+(`git tag v0.2.0 && git push origin v0.2.0`). [Release iş akışı](.github/workflows/release.yml) testleri çalıştırır,
+6 kurulum dosyasını + `SHA256SUMS.txt`'yi üretir ve Releases sayfasına yükler.
+
 ## Ne farklı?
 
 | | |

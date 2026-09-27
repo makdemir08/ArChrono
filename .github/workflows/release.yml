@@ -1,0 +1,75 @@
+# Kurulum dosyalarını üretir ve GitHub Releases sayfasına koyar.
+#   - "v*" etiketi gönderildiğinde (ör. git tag v0.1.0 && git push origin v0.1.0): testler → paketler → Release
+#   - Actions sekmesinden elle çalıştırıldığında: yalnızca paketleri üretir, Release oluşturmaz (artifact olarak indirilebilir)
+# Tüm paketler macOS üzerinde üretilir; Windows paketleri çapraz derlenir (scripts/package-windows.sh, NSIS).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Etiket ve sürüm uyumu
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props)"
+          if [[ "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::Etiket $GITHUB_REF_NAME, Directory.Build.props sürümüyle ($version) eşleşmiyor."
+            exit 1
+          fi
+
+      - name: NSIS (Windows kurulum sihirbazı)
+        run: brew install makensis
+
+      - name: Testler
+        run: ./scripts/test.sh
+
+      - name: macOS paketleri
+        run: |
+          ./scripts/package-macos.sh osx-arm64 --dmg
+          ./scripts/package-macos.sh osx-x64 --dmg
+
+      - name: Windows paketleri
+        run: |
+          ./scripts/package-windows.sh win-x64
+          ./scripts/package-windows.sh win-arm64
+
+      - name: SHA-256 özetleri
+        working-directory: dist
+        run: shasum -a 256 ArChrono-* > SHA256SUMS.txt && cat SHA256SUMS.txt
+
+      - name: GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* --title "ArChrono ${GITHUB_REF_NAME#v}" --notes-file .github/release-notes.md
+          fi
+
+      - name: Paketleri sakla (elle çalıştırma)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: archrono-installers
+          path: dist/*
