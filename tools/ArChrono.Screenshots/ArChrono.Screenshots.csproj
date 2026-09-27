@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ArChrono.Screenshots</RootNamespace>
+    <Description>Arayüzü headless Skia ile render edip PNG ekran görüntüleri üretir (dokümantasyon ve görsel kontrol).</Description>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless" />
+    <PackageReference Include="Avalonia.Skia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ArChrono.App\ArChrono.App.csproj" />
+  </ItemGroup>
+
+</Project>

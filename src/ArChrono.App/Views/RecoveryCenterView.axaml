@@ -1,0 +1,193 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:rec="using:ArChrono.Storage.Records"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.RecoveryCenterView"
+             x:DataType="vm:RecoveryCenterViewModel">
+  <Grid ColumnDefinitions="460,1,*">
+    <!-- Zaman çizelgesi -->
+    <Border Classes="sidebar">
+      <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel Margin="20,18,16,8" Spacing="4">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <c:IconView Data="{StaticResource Icon.Recovery}" Foreground="{DynamicResource Chrono.Time}" Width="22" Height="22" />
+            <TextBlock Classes="title" Text="{l:Loc 'Recovery Center', 'Kurtarma Merkezi'}" />
+          </StackPanel>
+          <TextBlock Classes="secondary" TextWrapping="Wrap" FontSize="12.5"
+                     Text="{l:Loc 'Every moment ArChrono protected, plus everything Git remembers (reflog). Pick one to see details and restore safely.', 'ArChrono\'nun koruduğu her an ve Git\'in hatırladığı her şey (reflog). Ayrıntıları görmek ve güvenle geri yüklemek için birini seçin.'}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="16,4,16,8" Spacing="8">
+          <TextBox PlaceholderText="{l:Loc 'Search recovery points', 'Kurtarma noktalarında ara'}" Text="{Binding Search}" FontSize="12" />
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <CheckBox IsChecked="{Binding ShowPoints}" FontSize="12">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <c:IconView Data="{StaticResource Icon.Recovery}" Width="12" Height="12" Foreground="{DynamicResource Chrono.Time}" />
+                <TextBlock Text="{l:Loc 'Recovery points', 'Kurtarma noktaları'}" FontSize="12" />
+              </StackPanel>
+            </CheckBox>
+            <CheckBox IsChecked="{Binding ShowSnapshots}" FontSize="12">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <c:IconView Data="{StaticResource Icon.Snapshot}" Width="12" Height="12" Foreground="{DynamicResource Chrono.Safe}" />
+                <TextBlock Text="{l:Loc 'Snapshots', 'Anlık görüntüler'}" FontSize="12" />
+              </StackPanel>
+            </CheckBox>
+            <CheckBox IsChecked="{Binding ShowReflog}" FontSize="12">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <c:IconView Data="{StaticResource Icon.Reflog}" Width="12" Height="12" Foreground="{DynamicResource Chrono.TextSecondary}" />
+                <TextBlock Text="Reflog" FontSize="12" />
+              </StackPanel>
+            </CheckBox>
+          </StackPanel>
+        </StackPanel>
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" Classes="compact">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="vm:TimelineItemViewModel">
+              <Panel>
+                <Border IsVisible="{Binding IsHeader}" Padding="20,14,16,6">
+                  <StackPanel Spacing="6">
+                    <TextBlock Classes="section" Text="{Binding Header}" Foreground="{DynamicResource Chrono.TextSecondary}" />
+                    <Border Height="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+                  </StackPanel>
+                </Border>
+                <Grid IsVisible="{Binding IsEntry}" ColumnDefinitions="54,28,*" Margin="0,0,12,0" MinHeight="46">
+                  <TextBlock Classes="mono" Text="{Binding Time}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,9,8,0" FontSize="12"
+                             Foreground="{DynamicResource Chrono.TextSecondary}" />
+                  <Grid Grid.Column="1">
+                    <Border Width="1" Background="{DynamicResource Chrono.BorderStrong}" HorizontalAlignment="Center" />
+                    <Border Width="22" Height="22" CornerRadius="11" Background="{DynamicResource Chrono.Sidebar}" VerticalAlignment="Top" Margin="0,6,0,0">
+                      <c:IconView Data="{Binding IconKey, Converter={x:Static infra:IconKeyConverter.Instance}}" Width="14" Height="14"
+                                  Foreground="{Binding AccentKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+                    </Border>
+                  </Grid>
+                  <StackPanel Grid.Column="2" Margin="8,7,0,7" Spacing="2">
+                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="Medium" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <Border Classes="badge" IsVisible="{Binding HasBranch}" Padding="4,0">
+                        <TextBlock Text="{Binding Branch}" FontSize="10.5" Foreground="{DynamicResource Chrono.Safe}" />
+                      </Border>
+                      <TextBlock Classes="meta" Text="{Binding Detail}" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasDetail}" />
+                    </StackPanel>
+                  </StackPanel>
+                </Grid>
+              </Panel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="3" Classes="divider-top" Padding="16,10">
+          <StackPanel Spacing="8">
+            <Grid ColumnDefinitions="*,Auto">
+              <Button HorizontalAlignment="Left" Command="{Binding DeepScanCommand}" ToolTip.Tip="{l:Loc 'Find commits and stashes that are not on any branch or reflog', 'Hiçbir branch\'te veya reflog\'da olmayan commit ve stash\'leri bul'}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <c:IconView Data="{StaticResource Icon.Lost}" Width="14" Height="14" Foreground="{DynamicResource Chrono.Ai}" />
+                  <TextBlock Text="{l:Loc 'Deep scan for lost work', 'Kayıp çalışmaları derin tara'}" />
+                </StackPanel>
+              </Button>
+              <Button Grid.Column="1" Classes="time" Command="{Binding SaveRecoveryPointCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <c:IconView Data="{StaticResource Icon.Pin}" Width="14" Height="14" Foreground="{DynamicResource Chrono.Time}" />
+                  <TextBlock Text="{l:Loc 'Save recovery point', 'Kurtarma noktası kaydet'}" Foreground="{DynamicResource Chrono.Time}" />
+                </StackPanel>
+              </Button>
+            </Grid>
+            <TextBlock Classes="meta" Text="{Binding ScanSummary}" IsVisible="{Binding ScanSummary, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+
+    <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+    <!-- Detay -->
+    <Border Grid.Column="2" Classes="panel">
+      <Panel>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8" IsVisible="{Binding !HasSelection}">
+          <c:IconView Data="{StaticResource Icon.Shield}" Width="40" Height="40" Foreground="{DynamicResource Chrono.TextTertiary}" />
+          <TextBlock Classes="secondary" Text="{l:Loc 'Select a moment on the left.', 'Soldan bir an seçin.'}" HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <ScrollViewer IsVisible="{Binding HasSelection}">
+          <StackPanel Margin="32,26" Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+            <StackPanel Spacing="6">
+              <TextBlock Classes="section" Text="{Binding SelectedKindText}" Foreground="{DynamicResource Chrono.Time}" />
+              <TextBlock Classes="headline" FontSize="22" Text="{Binding SelectedTitle}" TextWrapping="Wrap" />
+              <TextBlock Classes="secondary" Text="{Binding SelectedTime}" />
+            </StackPanel>
+
+            <!-- Eylemler -->
+            <WrapPanel Orientation="Horizontal">
+              <Button Classes="primary" Margin="0,0,8,8" Command="{Binding RestoreEverythingCommand}" IsVisible="{Binding CanRestore}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <c:IconView Data="{StaticResource Icon.Undo}" Width="14" Height="14" Foreground="{DynamicResource Chrono.SafeText}" />
+                  <TextBlock Text="{l:Loc 'Restore…', 'Geri yükle…'}" Foreground="{DynamicResource Chrono.SafeText}" FontWeight="SemiBold" />
+                </StackPanel>
+              </Button>
+              <Button Margin="0,0,8,8" Content="{l:Loc 'Restore files only…', 'Yalnızca dosyaları geri yükle…'}" Command="{Binding RestoreFilesCommand}" IsVisible="{Binding HasSnapshot}" />
+              <Button Margin="0,0,8,8" Content="{l:Loc 'Undo this operation…', 'Bu işlemi geri al…'}" Command="{Binding UndoOperationCommand}" IsVisible="{Binding CanUndoOperation}" />
+              <Button Margin="0,0,8,8" Content="{l:Loc 'Open in Time Machine', 'Zaman Makinesi\'nde aç'}" Command="{Binding OpenInTimeMachineCommand}" IsVisible="{Binding HasSnapshot}" />
+              <Button Margin="0,0,8,8" Content="{l:Loc 'Create branch here…', 'Burada branch oluştur…'}" Command="{Binding CreateBranchHereCommand}" IsVisible="{Binding CanCreateBranch}" />
+              <Button Margin="0,0,8,8" Classes="time" Content="{l:Loc 'Restore stash', 'Stash\'i geri getir'}" Command="{Binding RestoreStashCommand}" IsVisible="{Binding IsLostStash}" />
+              <Button Margin="0,0,8,8" Classes="ghost" Command="{Binding TogglePinCommand}" IsVisible="{Binding CanPin}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <c:IconView Data="{StaticResource Icon.Pin}" Width="14" Height="14" Foreground="{DynamicResource Chrono.Time}" />
+                  <TextBlock Text="{l:Loc 'Keep forever', 'Sonsuza kadar sakla'}" IsVisible="{Binding !IsPinned}" />
+                  <TextBlock Text="{l:Loc 'Pinned', 'Sabitlendi'}" IsVisible="{Binding IsPinned}" Foreground="{DynamicResource Chrono.Time}" />
+                </StackPanel>
+              </Button>
+            </WrapPanel>
+
+            <!-- Metadata -->
+            <Border Classes="card" Padding="18,14">
+              <Grid ColumnDefinitions="130,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Classes="meta" Text="Branch" />
+                <TextBlock Grid.Column="1" Text="{Binding SelectedBranch}" Foreground="{DynamicResource Chrono.Safe}" />
+                <TextBlock Grid.Row="1" Classes="meta" Text="HEAD" Margin="0,8,0,0" />
+                <SelectableTextBlock Grid.Row="1" Grid.Column="1" Classes="mono" Text="{Binding SelectedHead}" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="2" Classes="meta" Text="{l:Loc 'Operation', 'İşlem'}" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedOperation}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="3" Classes="meta" Text="{l:Loc 'Git command', 'Git komutu'}" Margin="0,8,0,0" IsVisible="{Binding HasCommand}" />
+                <SelectableTextBlock Grid.Row="3" Grid.Column="1" Classes="mono" Text="{Binding SelectedCommand}" Margin="0,8,0,0" IsVisible="{Binding HasCommand}" TextWrapping="Wrap" />
+              </Grid>
+            </Border>
+
+            <StackPanel Spacing="8" IsVisible="{Binding HasSnapshot}">
+              <TextBlock Classes="section" Text="{l:Loc 'SNAPSHOT', 'ANLIK GÖRÜNTÜ'}" />
+              <TextBlock Classes="secondary" Text="{Binding SnapshotInfo}" TextWrapping="Wrap" FontSize="12" />
+              <TextBlock Classes="section" Text="{l:Loc 'UNCOMMITTED FILES AT THIS MOMENT', 'BU ANDA COMMIT EDİLMEMİŞ DOSYALAR'}" Margin="0,6,0,0" />
+              <TextBlock Classes="meta" Text="{l:Loc 'None — the working tree matched the staging area.', 'Yok — çalışma alanı staging alanıyla aynıydı.'}" IsVisible="{Binding !HasChangedFiles}" />
+              <ItemsControl ItemsSource="{Binding ChangedFiles}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="rec:SnapshotEntryRecord">
+                    <Grid ColumnDefinitions="90,*" Margin="0,2">
+                      <TextBlock Classes="meta" Text="{Binding Kind}" />
+                      <TextBlock Grid.Column="1" Classes="mono" Text="{Binding Path}" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+
+            <StackPanel Spacing="8" IsVisible="{Binding CanRestore}">
+              <TextBlock Classes="section" Text="{l:Loc 'BRANCHES AND TAGS AT THIS MOMENT', 'BU ANDAKİ BRANCH VE TAG\'LER'}" />
+              <ItemsControl ItemsSource="{Binding RefLines}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="vm:RefLine">
+                    <Grid ColumnDefinitions="260,90" Margin="0,2" HorizontalAlignment="Left">
+                      <TextBlock Text="{Binding Name}" />
+                      <TextBlock Grid.Column="1" Classes="mono meta" Text="{Binding Sha}" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </Panel>
+    </Border>
+  </Grid>
+</UserControl>

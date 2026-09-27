@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.AI</RootNamespace>
+    <Description>Provider bağımsız AI katmanı ve gizlilik filtreleri (ADR-0005).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArChrono.Git\ArChrono.Git.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ArChrono.Tests" />
+  </ItemGroup>
+
+</Project>

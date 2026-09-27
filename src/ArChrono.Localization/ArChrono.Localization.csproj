@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.Localization</RootNamespace>
+    <Description>Arayüz dili (İngilizce / Türkçe): tüm katmanların kullanıcıya gösterdiği metinler için ortak seçim noktası.</Description>
+  </PropertyGroup>
+
+</Project>

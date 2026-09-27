@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             x:Class="ArChrono.App.Views.CommandPaletteView"
+             x:DataType="vm:CommandPaletteViewModel">
+  <Border Classes="card" Width="640" MaxHeight="520" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,90,0,0"
+          BoxShadow="0 24 64 0 #77000000">
+    <Grid RowDefinitions="Auto,Auto,*">
+      <Grid ColumnDefinitions="Auto,*" Margin="16,12">
+        <c:IconView Data="{StaticResource Icon.Search}" Foreground="{DynamicResource Chrono.TextTertiary}" Margin="0,0,10,0" />
+        <TextBox Grid.Column="1" Name="QueryBox" Text="{Binding Query}" PlaceholderText="{Binding Watermark}" BorderThickness="0" Background="Transparent" FontSize="15" />
+      </Grid>
+      <Border Grid.Row="1" Classes="divider-top" Padding="16,8,16,2">
+        <TextBlock Classes="section" Text="{Binding SectionTitle}" />
+      </Border>
+      <ListBox Grid.Row="2" Name="Results" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" Classes="rounded" Margin="0,2,0,8">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="vm:PaletteItem">
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="4,7">
+              <c:IconView Data="{Binding IconKey, Converter={x:Static infra:IconKeyConverter.Instance}}" Foreground="{DynamicResource Chrono.Safe}"
+                          Margin="0,0,12,0" VerticalAlignment="Center" />
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+                <TextBlock Text="{Binding Title}" />
+                <TextBlock Classes="meta" Text="{Binding Subtitle}" IsVisible="{Binding HasSubtitle}" TextTrimming="CharacterEllipsis" />
+              </StackPanel>
+              <Border Grid.Column="2" Classes="badge" IsVisible="{Binding HasShortcut}" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Shortcut}" Foreground="{DynamicResource Chrono.TextTertiary}" />
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+  </Border>
+</UserControl>

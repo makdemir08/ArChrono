@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.DiffView"
+             x:DataType="vm:DiffViewModel">
+  <UserControl.Styles>
+    <Style Selector="Border.row">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Border.row.added">
+      <Setter Property="Background" Value="{DynamicResource Chrono.DiffAddedBackground}" />
+    </Style>
+    <Style Selector="Border.row.removed">
+      <Setter Property="Background" Value="{DynamicResource Chrono.DiffRemovedBackground}" />
+    </Style>
+    <Style Selector="Border.row.hunk">
+      <Setter Property="Background" Value="{DynamicResource Chrono.DiffHunkBackground}" />
+    </Style>
+    <Style Selector="Border.row TextBlock.code">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+    </Style>
+    <Style Selector="Border.row.added TextBlock.code">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.DiffAddedText}" />
+    </Style>
+    <Style Selector="Border.row.removed TextBlock.code">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.DiffRemovedText}" />
+    </Style>
+    <Style Selector="Border.row.hunk TextBlock.code">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.DiffHunkText}" />
+    </Style>
+    <Style Selector="Border.row.marker TextBlock.code">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+      <Setter Property="FontStyle" Value="Italic" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,*">
+    <Border Classes="divider-bottom" Padding="12,6">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Classes="mono" Text="{Binding Path}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1" Classes="mono meta" Text="{Binding Stats}" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <TextBlock Grid.Row="1" Classes="secondary" Margin="16" Text="{l:Loc 'Binary file — no text diff.', 'İkili dosya — metin diff\'i yok.'}" IsVisible="{Binding IsBinary}" />
+    <TextBlock Grid.Row="1" Classes="secondary" Margin="16" Text="{Binding EmptyText}" IsVisible="{Binding IsEmpty}" />
+
+    <ListBox Grid.Row="1" ItemsSource="{Binding Rows}" Classes="compact" Background="Transparent">
+      <ListBox.Styles>
+        <Style Selector="ListBoxItem">
+          <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter, ListBoxItem:pointerover /template/ ContentPresenter">
+          <Setter Property="Background" Value="Transparent" />
+        </Style>
+      </ListBox.Styles>
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="vm:DiffRowViewModel">
+          <Border Classes="row" Classes.added="{Binding IsAdded}" Classes.removed="{Binding IsRemoved}"
+                  Classes.hunk="{Binding IsHunk}" Classes.marker="{Binding IsMarker}" MinHeight="19">
+            <Grid ColumnDefinitions="44,44,16,*,Auto">
+              <TextBlock Classes="mono tertiary" Text="{Binding OldLine}" HorizontalAlignment="Right" Margin="0,0,6,0" FontSize="11" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Classes="mono tertiary" Text="{Binding NewLine}" HorizontalAlignment="Right" Margin="0,0,6,0" FontSize="11" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="2" Classes="mono code" Text="{Binding Prefix}" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="3" Classes="mono code" Text="{Binding Text}" VerticalAlignment="Center" TextWrapping="NoWrap" />
+              <Button Grid.Column="4" Classes="link" FontSize="11" Margin="8,0" Content="{Binding Owner.HunkActionLabel}"
+                      IsVisible="{Binding CanRunHunkAction}" Command="{Binding Owner.RunHunkActionCommand}" CommandParameter="{Binding}" />
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Grid>
+</UserControl>

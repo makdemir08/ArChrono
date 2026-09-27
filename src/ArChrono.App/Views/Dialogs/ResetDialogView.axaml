@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.ResetDialogView"
+             x:DataType="vm:ResetDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="12">
+    <Border Classes="card" Padding="12,8">
+      <StackPanel>
+        <TextBlock Text="{Binding CommitSubject}" FontWeight="SemiBold" />
+        <TextBlock Classes="meta" Text="{Binding CommitMeta}" />
+      </StackPanel>
+    </Border>
+    <RadioButton GroupName="reset" IsChecked="{Binding Soft}">
+      <StackPanel Spacing="2">
+        <TextBlock Text="{l:Loc 'Keep changes staged (soft)', 'Değişiklikler stage edilmiş kalsın (soft)'}" FontWeight="SemiBold" />
+        <TextBlock Classes="secondary" FontSize="12" TextWrapping="Wrap" Text="{l:Loc 'Undo the commits after it, but keep all their changes ready to commit again.', 'Sonraki commit\'leri geri al, ancak tüm değişiklikleri yeniden commit etmeye hazır tut.'}" />
+      </StackPanel>
+    </RadioButton>
+    <RadioButton GroupName="reset" IsChecked="{Binding Mixed}">
+      <StackPanel Spacing="2">
+        <TextBlock Text="{l:Loc 'Keep changes, unstaged (mixed)', 'Değişiklikler kalsın, stage edilmemiş (mixed)'}" FontWeight="SemiBold" />
+        <TextBlock Classes="secondary" FontSize="12" TextWrapping="Wrap" Text="{l:Loc 'Undo the commits; their changes stay in your files so you can pick what to commit.', 'Commit\'leri geri al; değişiklikler dosyalarınızda kalır, neyi commit edeceğinizi seçebilirsiniz.'}" />
+      </StackPanel>
+    </RadioButton>
+    <RadioButton GroupName="reset" IsChecked="{Binding Hard}">
+      <StackPanel Spacing="2">
+        <TextBlock Text="{l:Loc 'Discard everything (hard)', 'Her şeyi at (hard)'}" FontWeight="SemiBold" Foreground="{DynamicResource Chrono.Danger}" />
+        <TextBlock Classes="secondary" FontSize="12" TextWrapping="Wrap" Text="{l:Loc 'Files go back exactly to this commit. Uncommitted work is overwritten — but ArChrono saves a recovery point first.', 'Dosyalar tam olarak bu commit\'e döner. Commit edilmemiş çalışmanın üzerine yazılır — ama ArChrono önce bir kurtarma noktası kaydeder.'}" />
+      </StackPanel>
+    </RadioButton>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+      <Button Classes="primary" Content="{l:Loc 'Continue', 'Devam et'}" Command="{Binding ConfirmCommand}" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

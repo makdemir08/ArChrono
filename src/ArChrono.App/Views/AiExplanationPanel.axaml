@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.AiExplanationPanel"
+             x:DataType="vm:AiExplanationViewModel">
+  <StackPanel Spacing="12" Margin="16">
+    <!-- Kurulu değil -->
+    <Border Classes="callout ai" IsVisible="{Binding IsNotConfigured}">
+      <StackPanel Spacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <c:IconView Data="{StaticResource Icon.Sparkles}" Foreground="{DynamicResource Chrono.Ai}" />
+          <TextBlock Text="{l:Loc 'AI explanations', 'AI açıklamaları'}" FontWeight="SemiBold" />
+        </StackPanel>
+        <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{Binding NotConfiguredText}" />
+        <TextBlock Classes="meta" TextWrapping="Wrap" Text="{l:Loc 'Nothing is sent anywhere until you choose a provider. Local Ollama keeps everything on this computer.', 'Bir sağlayıcı seçene kadar hiçbir şey bir yere gönderilmez. Yerel Ollama her şeyi bu bilgisayarda tutar.'}" />
+        <Button Classes="ai" Content="{l:Loc 'Open AI settings', 'AI ayarlarını aç'}" Command="{Binding OpenSettingsCommand}" HorizontalAlignment="Left" />
+      </StackPanel>
+    </Border>
+
+    <!-- Hazır ama istenmedi -->
+    <StackPanel Spacing="8" IsVisible="{Binding IsIdle}">
+      <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{l:Loc 'Get a plain-language explanation of what changed and what it might affect.', 'Neyin değiştiğine ve neleri etkileyebileceğine dair sade bir açıklama alın.'}" />
+      <Button Classes="ai" HorizontalAlignment="Left" Command="{Binding ExplainCommand}">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <c:IconView Data="{StaticResource Icon.Sparkles}" Foreground="{DynamicResource Chrono.Ai}" Width="14" Height="14" />
+          <TextBlock Text="{l:Loc 'Explain with AI', 'AI ile açıkla'}" Foreground="{DynamicResource Chrono.Ai}" />
+        </StackPanel>
+      </Button>
+      <TextBlock Classes="meta" Text="{Binding SourceDescription}" TextWrapping="Wrap" />
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsLoading}">
+      <ProgressBar IsIndeterminate="True" Width="80" MinWidth="80" VerticalAlignment="Center" />
+      <TextBlock Classes="secondary" Text="{l:Loc 'Asking the AI…', 'AI\'ye soruluyor…'}" VerticalAlignment="Center" />
+      <Button Classes="link" Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+    </StackPanel>
+
+    <Border Classes="callout danger" IsVisible="{Binding IsError}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="{l:Loc 'The AI request failed', 'AI isteği başarısız oldu'}" FontWeight="SemiBold" />
+        <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{Binding ErrorText}" />
+        <Button Content="{l:Loc 'Try again', 'Tekrar dene'}" Command="{Binding ExplainCommand}" HorizontalAlignment="Left" />
+      </StackPanel>
+    </Border>
+
+    <!-- Sonuç -->
+    <StackPanel Spacing="10" IsVisible="{Binding IsReady}">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Classes="badge ai">
+          <StackPanel Orientation="Horizontal" Spacing="4">
+            <c:IconView Data="{StaticResource Icon.Sparkles}" Foreground="{DynamicResource Chrono.Ai}" Width="11" Height="11" />
+            <TextBlock Text="{l:Loc 'AI generated explanation', 'AI tarafından üretilen açıklama'}" />
+          </StackPanel>
+        </Border>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+          <Button Classes="link" FontSize="12" Content="{l:Loc 'Copy', 'Kopyala'}" Command="{Binding CopyCommand}" />
+          <Button Classes="link" FontSize="12" Content="{l:Loc 'Regenerate', 'Yeniden oluştur'}" Command="{Binding ExplainCommand}" />
+        </StackPanel>
+      </Grid>
+      <SelectableTextBlock Text="{Binding Text}" TextWrapping="Wrap" LineHeight="20" />
+      <Border Classes="divider-top" Padding="0,8,0,0">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="meta" Text="{Binding SourceDescription}" TextWrapping="Wrap" />
+          <TextBlock Classes="meta" Text="{Binding Meta}" />
+          <TextBlock Classes="meta" Text="{l:Loc 'The facts above the tabs (author, date, files) come from Git, not from AI.', 'Sekmelerin üstündeki bilgiler (yazar, tarih, dosyalar) AI\'den değil, Git\'ten gelir.'}" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

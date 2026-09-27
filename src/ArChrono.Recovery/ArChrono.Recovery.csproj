@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.Recovery</RootNamespace>
+    <Description>Snapshot engine, recovery point'ler, Safe Git operasyon hattı ve undo (ADR-0003, ADR-0004).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArChrono.Git\ArChrono.Git.csproj" />
+    <ProjectReference Include="..\ArChrono.Storage\ArChrono.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ArChrono.Tests" />
+  </ItemGroup>
+
+</Project>

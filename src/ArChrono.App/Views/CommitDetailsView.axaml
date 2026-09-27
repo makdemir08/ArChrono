@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:views="using:ArChrono.App.Views"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.CommitDetailsView"
+             x:DataType="vm:CommitDetailsViewModel">
+  <Grid RowDefinitions="Auto,Auto,*">
+    <!-- Başlık: gerçek Git metadata'sı -->
+    <Border Padding="16,12,16,6">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="3">
+          <TextBlock Text="{Binding Subject}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Classes="meta" Text="{Binding AuthorLine}" />
+            <TextBlock Classes="meta" Text="{Binding DateLine}" />
+            <Button Classes="link" FontSize="11.5" Command="{Binding CopyShaCommand}" ToolTip.Tip="{l:Loc 'Copy full SHA', 'Tam SHA\'yı kopyala'}">
+              <TextBlock Classes="mono" FontSize="11.5" Text="{Binding FullSha}" Foreground="{DynamicResource Chrono.TextTertiary}" />
+            </Button>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Top">
+          <Button Classes="ghost" Padding="8,4" FontSize="12" Content="{l:Loc 'Branch here', 'Burada branch'}" Command="{Binding CreateBranchCommand}" />
+          <Button Classes="ghost" Padding="8,4" FontSize="12" Content="Revert" Command="{Binding RevertCommand}" />
+          <Button Classes="ghost" Padding="8,4" FontSize="12" Content="{l:Loc 'Reset to here', 'Buraya reset et'}" Command="{Binding ResetCommand}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Classes="divider-bottom" Padding="10,0">
+      <StackPanel Orientation="Horizontal">
+        <RadioButton Classes="tab" GroupName="commitTab" IsChecked="{Binding IsChangesTab}">
+          <TextBlock Text="{Binding Summary}" />
+        </RadioButton>
+        <RadioButton Classes="tab" GroupName="commitTab" IsChecked="{Binding IsExplanationTab}">
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <c:IconView Data="{StaticResource Icon.Sparkles}" Width="12" Height="12" Foreground="{DynamicResource Chrono.Ai}" />
+            <TextBlock Text="{l:Loc 'Explanation', 'Açıklama'}" />
+          </StackPanel>
+        </RadioButton>
+        <RadioButton Classes="tab" GroupName="commitTab" IsChecked="{Binding IsInfoTab}" Content="{l:Loc 'Info', 'Bilgi'}" />
+        <RadioButton Classes="tab" GroupName="commitTab" IsChecked="{Binding IsHistoryTab}" Content="{l:Loc 'File history', 'Dosya geçmişi'}" />
+      </StackPanel>
+    </Border>
+
+    <!-- Changes -->
+    <Grid Grid.Row="2" ColumnDefinitions="300,1,*" IsVisible="{Binding IsChangesTab}">
+      <ListBox Classes="rounded" ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}" Margin="0,6">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="vm:CommitFileItem">
+            <Grid ColumnDefinitions="18,*,Auto" Height="26" ToolTip.Tip="{Binding Path}">
+              <TextBlock Classes="mono" Text="{Binding Letter}" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"
+                         Foreground="{Binding BrushKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" ClipToBounds="True">
+                <TextBlock Text="{Binding FileName}" />
+                <TextBlock Classes="meta" Text="{Binding Directory}" TextTrimming="CharacterEllipsis" />
+              </StackPanel>
+              <TextBlock Grid.Column="2" Classes="mono meta" FontSize="10.5" Text="{Binding Stats}" VerticalAlignment="Center" Margin="6,0,0,0" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+      <views:DiffView Grid.Column="2" DataContext="{Binding Diff}" />
+    </Grid>
+
+    <!-- Explanation -->
+    <ScrollViewer Grid.Row="2" IsVisible="{Binding IsExplanationTab}">
+      <views:AiExplanationPanel DataContext="{Binding Explanation}" MaxWidth="820" HorizontalAlignment="Left" />
+    </ScrollViewer>
+
+    <!-- Info -->
+    <ScrollViewer Grid.Row="2" IsVisible="{Binding IsInfoTab}">
+      <Grid Margin="18,14" ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+        <TextBlock Classes="meta" Text="Commit" />
+        <SelectableTextBlock Grid.Column="1" Classes="mono" Text="{Binding FullSha}" />
+        <TextBlock Grid.Row="1" Classes="meta" Text="{l:Loc 'Author', 'Yazar'}" Margin="0,8,0,0" />
+        <SelectableTextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AuthorLine}" Margin="0,8,0,0" />
+        <TextBlock Grid.Row="2" Classes="meta" Text="{l:Loc 'Date', 'Tarih'}" Margin="0,8,0,0" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DateLine}" Margin="0,8,0,0" />
+        <TextBlock Grid.Row="3" Classes="meta" Text="{l:Loc 'Parents', 'Üst commit\'ler'}" Margin="0,8,0,0" />
+        <SelectableTextBlock Grid.Row="3" Grid.Column="1" Classes="mono" Text="{Binding ParentsLine}" Margin="0,8,0,0" />
+        <TextBlock Grid.Row="4" Classes="meta" Text="{l:Loc 'Message', 'Mesaj'}" Margin="0,8,0,0" />
+        <SelectableTextBlock Grid.Row="4" Grid.Column="1" Margin="0,8,0,0" TextWrapping="Wrap">
+          <Run Text="{Binding Subject}" FontWeight="SemiBold" /><LineBreak /><LineBreak /><Run Text="{Binding Body}" />
+        </SelectableTextBlock>
+      </Grid>
+    </ScrollViewer>
+
+    <!-- File history -->
+    <Grid Grid.Row="2" IsVisible="{Binding IsHistoryTab}" RowDefinitions="Auto,*">
+      <TextBlock Classes="meta" Margin="16,10,16,4" Text="{l:Loc 'Commits that changed the selected file (follows renames). Select one to jump to it in the graph.', 'Seçili dosyayı değiştiren commit\'ler (yeniden adlandırmaları izler). Grafikte ona gitmek için birini seçin.'}" TextWrapping="Wrap" />
+      <ListBox Grid.Row="1" Classes="rounded" ItemsSource="{Binding History}" SelectedItem="{Binding SelectedHistory}">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="vm:FileHistoryItem">
+            <StackPanel Margin="6,6" Spacing="2">
+              <TextBlock Text="{Binding Subject}" />
+              <TextBlock Classes="meta" Text="{Binding Meta}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+  </Grid>
+</UserControl>

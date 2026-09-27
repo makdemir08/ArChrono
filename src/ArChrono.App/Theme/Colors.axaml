@@ -1,0 +1,112 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    ArChrono renk token'ları. Anlam taşıyan renkler:
+      Safe (teal)   → geri alınabilir, başarılı, recovery güvencesi
+      Time (amber)  → recovery point, snapshot, zaman
+      Danger (red)  → destructive onay, başarısız işlem
+      Ai (violet)   → yalnızca AI üretimi içerik
+  -->
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Dark">
+      <Color x:Key="Chrono.WindowColor">#0F1115</Color>
+      <SolidColorBrush x:Key="Chrono.Window" Color="#0F1115" />
+      <SolidColorBrush x:Key="Chrono.Panel" Color="#141720" />
+      <SolidColorBrush x:Key="Chrono.Sidebar" Color="#11141B" />
+      <SolidColorBrush x:Key="Chrono.Rail" Color="#0C0E12" />
+      <SolidColorBrush x:Key="Chrono.Elevated" Color="#1A1E28" />
+      <SolidColorBrush x:Key="Chrono.Input" Color="#0F1218" />
+      <SolidColorBrush x:Key="Chrono.Hover" Color="#1D2230" />
+      <SolidColorBrush x:Key="Chrono.Selected" Color="#1F2B3D" />
+      <SolidColorBrush x:Key="Chrono.Backdrop" Color="#B3070809" />
+      <SolidColorBrush x:Key="Chrono.BorderSubtle" Color="#212634" />
+      <SolidColorBrush x:Key="Chrono.BorderStrong" Color="#2E3546" />
+      <SolidColorBrush x:Key="Chrono.TextPrimary" Color="#E6E9EF" />
+      <SolidColorBrush x:Key="Chrono.TextSecondary" Color="#A0A8B8" />
+      <SolidColorBrush x:Key="Chrono.TextTertiary" Color="#6B7385" />
+
+      <SolidColorBrush x:Key="Chrono.Safe" Color="#2DD4BF" />
+      <SolidColorBrush x:Key="Chrono.SafeMuted" Color="#10342F" />
+      <SolidColorBrush x:Key="Chrono.SafeText" Color="#062521" />
+      <SolidColorBrush x:Key="Chrono.Time" Color="#F5B84B" />
+      <SolidColorBrush x:Key="Chrono.TimeMuted" Color="#33280F" />
+      <SolidColorBrush x:Key="Chrono.Danger" Color="#F87171" />
+      <SolidColorBrush x:Key="Chrono.DangerMuted" Color="#3A1719" />
+      <SolidColorBrush x:Key="Chrono.Ai" Color="#B39DFA" />
+      <SolidColorBrush x:Key="Chrono.AiMuted" Color="#261F42" />
+      <SolidColorBrush x:Key="Chrono.Info" Color="#6CB6FF" />
+
+      <SolidColorBrush x:Key="Chrono.DiffAddedBackground" Color="#11291D" />
+      <SolidColorBrush x:Key="Chrono.DiffAddedText" Color="#8BE3B0" />
+      <SolidColorBrush x:Key="Chrono.DiffRemovedBackground" Color="#321719" />
+      <SolidColorBrush x:Key="Chrono.DiffRemovedText" Color="#F5A7AC" />
+      <SolidColorBrush x:Key="Chrono.DiffHunkBackground" Color="#172033" />
+      <SolidColorBrush x:Key="Chrono.DiffHunkText" Color="#8EA2C8" />
+
+      <Color x:Key="Chrono.Lane0">#4FD1C5</Color>
+      <Color x:Key="Chrono.Lane1">#F6AD55</Color>
+      <Color x:Key="Chrono.Lane2">#B794F4</Color>
+      <Color x:Key="Chrono.Lane3">#63B3ED</Color>
+      <Color x:Key="Chrono.Lane4">#F687B3</Color>
+      <Color x:Key="Chrono.Lane5">#68D391</Color>
+      <Color x:Key="Chrono.Lane6">#FC8181</Color>
+      <Color x:Key="Chrono.Lane7">#F6E05E</Color>
+
+      <!-- Fluent tema vurgusu -->
+      <Color x:Key="SystemAccentColor">#2DD4BF</Color>
+      <Color x:Key="SystemAccentColorDark1">#26B5A3</Color>
+      <Color x:Key="SystemAccentColorLight1">#5EE0D0</Color>
+    </ResourceDictionary>
+
+    <ResourceDictionary x:Key="Light">
+      <Color x:Key="Chrono.WindowColor">#F6F7F9</Color>
+      <SolidColorBrush x:Key="Chrono.Window" Color="#F6F7F9" />
+      <SolidColorBrush x:Key="Chrono.Panel" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="Chrono.Sidebar" Color="#F0F2F5" />
+      <SolidColorBrush x:Key="Chrono.Rail" Color="#E8EBF0" />
+      <SolidColorBrush x:Key="Chrono.Elevated" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="Chrono.Input" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="Chrono.Hover" Color="#E8ECF2" />
+      <SolidColorBrush x:Key="Chrono.Selected" Color="#D9E6F6" />
+      <SolidColorBrush x:Key="Chrono.Backdrop" Color="#8C1A1F2A" />
+      <SolidColorBrush x:Key="Chrono.BorderSubtle" Color="#E1E5EB" />
+      <SolidColorBrush x:Key="Chrono.BorderStrong" Color="#CBD2DC" />
+      <SolidColorBrush x:Key="Chrono.TextPrimary" Color="#1A1E26" />
+      <SolidColorBrush x:Key="Chrono.TextSecondary" Color="#4F5868" />
+      <SolidColorBrush x:Key="Chrono.TextTertiary" Color="#8790A0" />
+
+      <SolidColorBrush x:Key="Chrono.Safe" Color="#0E9384" />
+      <SolidColorBrush x:Key="Chrono.SafeMuted" Color="#D8F3EF" />
+      <SolidColorBrush x:Key="Chrono.SafeText" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="Chrono.Time" Color="#B26F0E" />
+      <SolidColorBrush x:Key="Chrono.TimeMuted" Color="#FBEFD8" />
+      <SolidColorBrush x:Key="Chrono.Danger" Color="#CF3B3B" />
+      <SolidColorBrush x:Key="Chrono.DangerMuted" Color="#FBE4E4" />
+      <SolidColorBrush x:Key="Chrono.Ai" Color="#6D3BDB" />
+      <SolidColorBrush x:Key="Chrono.AiMuted" Color="#EEE7FC" />
+      <SolidColorBrush x:Key="Chrono.Info" Color="#2563EB" />
+
+      <SolidColorBrush x:Key="Chrono.DiffAddedBackground" Color="#E5F5EA" />
+      <SolidColorBrush x:Key="Chrono.DiffAddedText" Color="#1D6B3A" />
+      <SolidColorBrush x:Key="Chrono.DiffRemovedBackground" Color="#FBE8E9" />
+      <SolidColorBrush x:Key="Chrono.DiffRemovedText" Color="#9B2C2C" />
+      <SolidColorBrush x:Key="Chrono.DiffHunkBackground" Color="#EDF1F7" />
+      <SolidColorBrush x:Key="Chrono.DiffHunkText" Color="#4A5A78" />
+
+      <Color x:Key="Chrono.Lane0">#0E9384</Color>
+      <Color x:Key="Chrono.Lane1">#D0831B</Color>
+      <Color x:Key="Chrono.Lane2">#7C4FD6</Color>
+      <Color x:Key="Chrono.Lane3">#2F7CC9</Color>
+      <Color x:Key="Chrono.Lane4">#CC3F86</Color>
+      <Color x:Key="Chrono.Lane5">#2F9B58</Color>
+      <Color x:Key="Chrono.Lane6">#D64545</Color>
+      <Color x:Key="Chrono.Lane7">#A68A07</Color>
+
+      <Color x:Key="SystemAccentColor">#0E9384</Color>
+      <Color x:Key="SystemAccentColorDark1">#0B7A6E</Color>
+      <Color x:Key="SystemAccentColorLight1">#29A99A</Color>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+
+  <FontFamily x:Key="Chrono.MonoFont">Cascadia Mono, SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace</FontFamily>
+</ResourceDictionary>

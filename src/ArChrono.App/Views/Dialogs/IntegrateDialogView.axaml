@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:git="using:ArChrono.Git.Models"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.IntegrateDialogView"
+             x:DataType="vm:IntegrateDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="14">
+    <Grid ColumnDefinitions="*,Auto,*">
+      <Border Classes="card" Padding="12,8">
+        <StackPanel>
+          <TextBlock Classes="meta" Text="{l:Loc 'From', 'Kaynak'}" />
+          <TextBlock Text="{Binding Source}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+      </Border>
+      <c:IconView Grid.Column="1" Data="{StaticResource Icon.ChevronRight}" Margin="10,0" Foreground="{DynamicResource Chrono.TextTertiary}" />
+      <Border Grid.Column="2" Classes="card" Padding="12,8">
+        <StackPanel>
+          <TextBlock Classes="meta" Text="{l:Loc 'Into', 'Hedef'}" />
+          <TextBlock Text="{Binding Target}" FontWeight="SemiBold" Foreground="{DynamicResource Chrono.Safe}" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Background="{DynamicResource Chrono.Input}" CornerRadius="7" Padding="2" HorizontalAlignment="Left">
+      <StackPanel Orientation="Horizontal">
+        <RadioButton Classes="segment" GroupName="kind" IsChecked="{Binding !IsRebase}" Content="Merge" />
+        <RadioButton Classes="segment" GroupName="kind" IsChecked="{Binding IsRebase}" Content="Rebase" />
+      </StackPanel>
+    </Border>
+    <TextBlock Classes="secondary" Text="{Binding Explanation}" TextWrapping="Wrap" />
+    <CheckBox Content="{l:Loc 'Always create a merge commit (--no-ff)', 'Her zaman merge commit\'i oluştur (--no-ff)'}" IsChecked="{Binding NoFastForward}" IsVisible="{Binding !IsRebase}" />
+
+    <Border Classes="card" Padding="14,12">
+      <StackPanel Spacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsPredicting}" Width="40" MinWidth="40" />
+          <TextBlock Text="{Binding PredictionSummary}" TextWrapping="Wrap" FontWeight="SemiBold"
+                     Foreground="{Binding PredictionKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+        </StackPanel>
+        <ScrollViewer MaxHeight="200">
+          <ItemsControl ItemsSource="{Binding Files}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="git:PredictedConflict">
+                <StackPanel Margin="0,3">
+                  <TextBlock Classes="mono" FontSize="12" Text="{Binding Path}" />
+                  <TextBlock Classes="meta" Text="{Binding Description}" TextWrapping="Wrap" />
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+        <TextBlock Classes="meta" TextWrapping="Wrap" Text="{l:Loc 'Predicted with git merge-tree — your files are not touched. A recovery point is created before the real operation.', 'git merge-tree ile tahmin edildi — dosyalarınıza dokunulmaz. Gerçek işlemden önce bir kurtarma noktası oluşturulur.'}" />
+      </StackPanel>
+    </Border>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+      <Button Classes="primary" Content="{l:Loc 'Continue', 'Devam et'}" Command="{Binding ConfirmCommand}" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

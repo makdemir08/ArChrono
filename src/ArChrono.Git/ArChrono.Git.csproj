@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.Git</RootNamespace>
+    <Description>Git adapter: git executable çağrıları, çıktı ayrıştırıcıları ve alan servisleri.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ArChrono.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArChrono.Localization\ArChrono.Localization.csproj" />
+  </ItemGroup>
+
+</Project>

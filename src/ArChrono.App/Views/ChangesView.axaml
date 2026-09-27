@@ -1,0 +1,126 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:views="using:ArChrono.App.Views"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.ChangesView"
+             x:DataType="vm:ChangesViewModel">
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="vm:FileChangeItem">
+      <Grid ColumnDefinitions="18,*" Height="26" ToolTip.Tip="{Binding ToolTip}" Background="Transparent">
+        <TextBlock Classes="mono" Text="{Binding Letter}" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"
+                   Foreground="{Binding BrushKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" ClipToBounds="True">
+          <TextBlock Text="{Binding FileName}" />
+          <TextBlock Classes="meta" Text="{Binding Directory}" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <Grid ColumnDefinitions="340,1,*">
+    <Grid RowDefinitions="Auto,*,Auto,*,Auto">
+      <Border Classes="divider-bottom" Padding="12,8">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <c:IconView Data="{StaticResource Icon.Save}" Foreground="{DynamicResource Chrono.Safe}" />
+            <TextBlock Text="{Binding Header}" FontWeight="SemiBold" VerticalAlignment="Center" />
+          </StackPanel>
+          <Button Grid.Column="1" Classes="ghost" Padding="8,3" FontSize="12" Command="{Binding StashCommand}" ToolTip.Tip="{l:Loc 'Put all changes aside (stash)', 'Tüm değişiklikleri kenara koy (stash)'}">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <c:IconView Data="{StaticResource Icon.Stash}" Width="13" Height="13" Foreground="{DynamicResource Chrono.TextSecondary}" />
+              <TextBlock Text="{l:Loc 'Put aside', 'Kenara koy'}" FontSize="12" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </Border>
+
+      <!-- Unstaged -->
+      <Grid Grid.Row="1" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto,Auto" Margin="12,8,8,4">
+          <TextBlock Classes="section" Text="{Binding UnstagedHeader}" VerticalAlignment="Center" />
+          <Button Grid.Column="1" Classes="link" FontSize="11.5" Content="{l:Loc 'Discard all', 'Tümünü at'}" Command="{Binding DiscardAllCommand}" Margin="0,0,10,0"
+                  Foreground="{DynamicResource Chrono.Danger}" />
+          <Button Grid.Column="2" Classes="link" FontSize="11.5" Content="{l:Loc 'Stage all', 'Tümünü stage et'}" Command="{Binding StageAllCommand}" />
+        </Grid>
+        <ListBox Grid.Row="1" Classes="rounded" ItemsSource="{Binding Unstaged}" SelectedItem="{Binding SelectedFile}">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="vm:FileChangeItem">
+              <Grid ColumnDefinitions="*,Auto">
+                <Grid.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="{l:Loc 'Stage', 'Stage et'}" Command="{Binding $parent[ListBox].((vm:ChangesViewModel)DataContext).StageCommand}" CommandParameter="{Binding}" />
+                    <MenuItem Header="{l:Loc 'Discard changes…', 'Değişiklikleri at…'}" Command="{Binding $parent[ListBox].((vm:ChangesViewModel)DataContext).DiscardCommand}" CommandParameter="{Binding}" />
+                  </ContextMenu>
+                </Grid.ContextMenu>
+                <ContentControl Content="{Binding}" />
+                <Button Grid.Column="1" Classes="icon" Padding="3" ToolTip.Tip="{l:Loc 'Stage', 'Stage et'}"
+                        Command="{Binding $parent[ListBox].((vm:ChangesViewModel)DataContext).StageCommand}" CommandParameter="{Binding}">
+                  <c:IconView Data="{StaticResource Icon.Plus}" Width="12" Height="12" Foreground="{DynamicResource Chrono.Safe}" />
+                </Button>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
+
+      <Border Grid.Row="2" Height="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+      <!-- Staged -->
+      <Grid Grid.Row="3" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto" Margin="12,8,8,4">
+          <TextBlock Classes="section" Text="{Binding StagedHeader}" VerticalAlignment="Center" Foreground="{DynamicResource Chrono.Safe}" />
+          <Button Grid.Column="1" Classes="link" FontSize="11.5" Content="{l:Loc 'Unstage all', 'Tümünü unstage et'}" Command="{Binding UnstageAllCommand}" />
+        </Grid>
+        <ListBox Grid.Row="1" Classes="rounded" ItemsSource="{Binding Staged}" SelectedItem="{Binding SelectedFile}">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="vm:FileChangeItem">
+              <Grid ColumnDefinitions="*,Auto">
+                <ContentControl Content="{Binding}" />
+                <Button Grid.Column="1" Classes="icon" Padding="3" ToolTip.Tip="{l:Loc 'Unstage', 'Unstage et'}"
+                        Command="{Binding $parent[ListBox].((vm:ChangesViewModel)DataContext).UnstageCommand}" CommandParameter="{Binding}">
+                  <c:IconView Data="{StaticResource Icon.Close}" Width="11" Height="11" Foreground="{DynamicResource Chrono.TextSecondary}" />
+                </Button>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
+
+      <!-- Commit mesajı -->
+      <Border Grid.Row="4" Classes="divider-top" Padding="12,10">
+        <StackPanel Spacing="8">
+          <TextBox Text="{Binding Message}" PlaceholderText="{Binding MessageWatermark}" AcceptsReturn="True" TextWrapping="Wrap"
+                   MinHeight="72" MaxHeight="160" Name="MessageBox" />
+          <TextBlock Classes="ai" FontSize="11" Text="{Binding AiNote}" IsVisible="{Binding AiNote, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <CheckBox Content="{l:Loc 'Amend last', 'Amend'}" IsChecked="{Binding IsAmend}" FontSize="12"
+                      ToolTip.Tip="{l:Loc 'Replace the last commit with these changes (amend)', 'Son commit\'i bu değişikliklerle değiştir (amend)'}" />
+            <Button Grid.Column="1" Classes="ai" HorizontalAlignment="Right" Margin="0,0,8,0" Padding="9,5" Command="{Binding GenerateMessageCommand}"
+                    ToolTip.Tip="{l:Loc 'Write a message from the staged changes (AI — you review before committing)', 'Stage edilmiş değişikliklerden mesaj yaz (AI — commit etmeden önce gözden geçirirsiniz)'}">
+              <StackPanel Orientation="Horizontal" Spacing="5">
+                <c:IconView Data="{StaticResource Icon.Sparkles}" Width="13" Height="13" Foreground="{DynamicResource Chrono.Ai}" />
+                <TextBlock Text="{l:Loc 'Generate', 'Oluştur'}" Foreground="{DynamicResource Chrono.Ai}" FontSize="12" />
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsGenerating}" Width="30" MinWidth="30" />
+              </StackPanel>
+            </Button>
+            <Button Grid.Column="2" Classes="primary" Content="{Binding CommitButtonText}" Command="{Binding CommitCommand}" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+    <Panel Grid.Column="2">
+      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8" IsVisible="{Binding !HasChanges}">
+        <c:IconView Data="{StaticResource Icon.Check}" Foreground="{DynamicResource Chrono.Safe}" Width="32" Height="32" />
+        <TextBlock Text="{l:Loc 'Nothing to commit', 'Commit edilecek bir şey yok'}" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" />
+        <TextBlock Classes="secondary" Text="{l:Loc 'Your working tree matches the last commit.', 'Çalışma alanınız son commit ile aynı.'}" HorizontalAlignment="Center" />
+      </StackPanel>
+      <views:DiffView DataContext="{Binding Diff}" IsVisible="{Binding $parent[UserControl].((vm:ChangesViewModel)DataContext).Diff, Converter={x:Static ObjectConverters.IsNotNull}}" />
+    </Panel>
+  </Grid>
+</UserControl>

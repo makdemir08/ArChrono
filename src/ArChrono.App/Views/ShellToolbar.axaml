@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             xmlns:settings="using:ArChrono.Application.Settings"
+             x:Class="ArChrono.App.Views.ShellToolbar"
+             x:DataType="vm:MainWindowViewModel">
+  <!-- Ana ekran ve depo üst çubuğunda ortak: gece/gündüz · dil · ayarlar · hakkında -->
+  <StackPanel Orientation="Horizontal" Spacing="2">
+    <c:DayNightToggleButton Classes="icon" Command="{Binding ToggleDayNightCommand}" />
+    <Button Classes="icon" Padding="7,6" ToolTip.Tip="{l:Loc 'Language', 'Dil'}">
+      <StackPanel Orientation="Horizontal" Spacing="5">
+        <c:IconView Data="{StaticResource Icon.Globe}" />
+        <TextBlock Text="{Binding LanguageCode}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+      </StackPanel>
+      <Button.Flyout>
+        <MenuFlyout Placement="BottomEdgeAlignedRight">
+          <MenuItem Header="English" ToggleType="Radio" GroupName="language" IsChecked="{Binding IsEnglishPreferred, Mode=OneWay}"
+                    Command="{Binding SetLanguageCommand}" CommandParameter="{x:Static settings:LanguagePreference.English}" />
+          <MenuItem Header="Türkçe" ToggleType="Radio" GroupName="language" IsChecked="{Binding IsTurkishPreferred, Mode=OneWay}"
+                    Command="{Binding SetLanguageCommand}" CommandParameter="{x:Static settings:LanguagePreference.Turkish}" />
+          <Separator />
+          <MenuItem Header="{l:Loc 'Same as system', 'Sistemle aynı'}" ToggleType="Radio" GroupName="language" IsChecked="{Binding IsSystemLanguagePreferred, Mode=OneWay}"
+                    Command="{Binding SetLanguageCommand}" CommandParameter="{x:Static settings:LanguagePreference.System}" />
+        </MenuFlyout>
+      </Button.Flyout>
+    </Button>
+    <Button Classes="icon" Command="{Binding OpenSettingsCommand}" ToolTip.Tip="{l:Loc 'Settings (⌘,)', 'Ayarlar (⌘,)'}">
+      <c:IconView Data="{StaticResource Icon.Settings}" />
+    </Button>
+    <Button Classes="icon" Command="{Binding ShowAboutCommand}" ToolTip.Tip="{l:Loc 'About ArChrono', 'ArChrono Hakkında'}">
+      <c:IconView Data="{StaticResource Icon.Info}" />
+    </Button>
+  </StackPanel>
+</UserControl>

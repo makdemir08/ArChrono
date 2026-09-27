@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <UserControl.Resources>
+    <DataTemplate x:Key="OptionLabel" x:DataType="x:Object">
+      <TextBlock Text="{Binding Converter={x:Static l:LabelConverter.Instance}}" />
+    </DataTemplate>
+  </UserControl.Resources>
+  <UserControl.Styles>
+    <Style Selector="TextBlock.label">
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Margin" Value="0,10,0,4" />
+    </Style>
+  </UserControl.Styles>
+  <Grid ColumnDefinitions="236,*" Height="560" Margin="0,8,0,0">
+    <StackPanel Margin="12,4" Spacing="2">
+      <RadioButton Classes="tab" GroupName="settingsTab" IsChecked="{Binding IsGeneral}" Content="{l:Loc 'General', 'Genel'}" />
+      <RadioButton Classes="tab" GroupName="settingsTab" IsChecked="{Binding IsTimeMachine}" Content="{l:Loc 'Time Machine &amp; Storage', 'Zaman Makinesi ve Depolama'}" />
+      <RadioButton Classes="tab" GroupName="settingsTab" IsChecked="{Binding IsAi}" Content="{l:Loc 'AI &amp; Privacy', 'AI ve Gizlilik'}" />
+      <RadioButton Classes="tab" GroupName="settingsTab" IsChecked="{Binding IsGit}" Content="Git" />
+    </StackPanel>
+
+    <Grid Grid.Column="1" RowDefinitions="*,Auto">
+      <ScrollViewer Padding="8,0,22,0">
+        <Panel>
+          <!-- General -->
+          <StackPanel IsVisible="{Binding IsGeneral}" Spacing="2">
+            <TextBlock Classes="label" Text="{l:Loc 'Mode', 'Mod'}" />
+            <ToggleSwitch IsChecked="{Binding IsPro}" OnContent="{l:Loc 'Pro — Git terminology and commands', 'Pro — Git terimleri ve komutları'}" OffContent="{l:Loc 'Guided — plain language and explanations', 'Rehberli — sade dil ve açıklamalar'}" />
+            <TextBlock Classes="label" Text="{l:Loc 'Theme', 'Tema'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Themes}" ItemTemplate="{StaticResource OptionLabel}" SelectedItem="{Binding Theme}" Width="200" />
+            <TextBlock Classes="label" Text="{l:Loc 'Language', 'Dil'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Languages}" ItemTemplate="{StaticResource OptionLabel}" SelectedItem="{Binding Language}" Width="200" />
+            <TextBlock Classes="label" Text="{l:Loc 'Terminal application', 'Terminal uygulaması'}" />
+            <TextBox Text="{Binding TerminalApplication}" PlaceholderText="Terminal / iTerm / wt / powershell" Width="320" HorizontalAlignment="Left" />
+            <TextBlock Classes="meta" Margin="0,16,0,0" TextWrapping="Wrap" Text="{l:Loc 'Telemetry is off. ArChrono never sends repository content anywhere unless you use an AI feature with a remote provider.', 'Telemetri kapalı. Uzak bir sağlayıcıyla AI özelliği kullanmadığınız sürece ArChrono depo içeriğini hiçbir yere göndermez.'}" />
+          </StackPanel>
+
+          <!-- Time Machine -->
+          <StackPanel IsVisible="{Binding IsTimeMachine}" Spacing="2">
+            <ToggleSwitch IsChecked="{Binding TimeMachineEnabled}" OnContent="{l:Loc 'Automatic snapshots are on', 'Otomatik anlık görüntüler açık'}" OffContent="{l:Loc 'Automatic snapshots are off', 'Otomatik anlık görüntüler kapalı'}" />
+            <TextBlock Classes="meta" TextWrapping="Wrap" Text="{l:Loc 'Recovery points before risky operations are always created, even when automatic snapshots are off.', 'Riskli işlemlerden önceki kurtarma noktaları, otomatik anlık görüntüler kapalıyken bile her zaman oluşturulur.'}" />
+            <TextBlock Classes="label" Text="{l:Loc 'Snapshot interval when files change (minutes)', 'Dosyalar değiştiğinde anlık görüntü aralığı (dakika)'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Intervals}" SelectedItem="{Binding IntervalMinutes}" Width="120" />
+            <TextBlock Classes="label" Text="{l:Loc 'Keep snapshots', 'Anlık görüntüleri sakla'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Retentions}" ItemTemplate="{StaticResource OptionLabel}" SelectedItem="{Binding Keep}" Width="200" />
+            <TextBlock Classes="label" Text="{l:Loc 'Maximum storage (GB)', 'En fazla depolama (GB)'}" />
+            <NumericUpDown Value="{Binding MaxStorageGigabytes}" Minimum="0.1" Maximum="1000" Increment="0.5" FormatString="0.0" Width="160" HorizontalAlignment="Left" />
+            <TextBlock Classes="meta" Text="{Binding StorageUsage}" Margin="0,6,0,0" />
+            <TextBlock Classes="label" Text="{l:Loc 'Skip files larger than (MB)', 'Şundan büyük dosyaları atla (MB)'}" />
+            <NumericUpDown Value="{Binding MaxFileSizeMegabytes}" Minimum="1" Maximum="2048" Increment="5" Width="160" HorizontalAlignment="Left" />
+            <CheckBox Margin="0,14,0,0" IsChecked="{Binding PinInRepository}" Content="{l:Loc 'Protect recovery data from git gc with hidden refs (refs/archrono/*)', 'Kurtarma verilerini gizli ref\'lerle git gc\'den koru (refs/archrono/*)'}" />
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,14,0,0">
+              <Button Content="{l:Loc 'Run cleanup now', 'Şimdi temizle'}" Command="{Binding RunCleanupCommand}" />
+              <TextBlock Classes="meta" Text="{Binding CleanupResult}" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+
+          <!-- AI -->
+          <StackPanel IsVisible="{Binding IsAi}" Spacing="2">
+            <ToggleSwitch IsChecked="{Binding AiEnabled}" OnContent="{l:Loc 'AI features are on', 'AI özellikleri açık'}" OffContent="{l:Loc 'AI features are off', 'AI özellikleri kapalı'}" />
+            <TextBlock Classes="label" Text="{l:Loc 'Provider', 'Sağlayıcı'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Providers}" SelectedItem="{Binding Provider}" Width="220" />
+            <TextBlock Classes="label" Text="{l:Loc 'Endpoint (leave empty for the default)', 'Endpoint (varsayılan için boş bırakın)'}" />
+            <TextBox Text="{Binding Endpoint}" PlaceholderText="{Binding EndpointWatermark}" />
+            <TextBlock Classes="label" Text="Model" />
+            <AutoCompleteBox Text="{Binding Model}" ItemsSource="{Binding SuggestedModels}" FilterMode="StartsWith" MinimumPrefixLength="0" />
+            <StackPanel IsVisible="{Binding IsAzure}">
+              <TextBlock Classes="label" Text="{l:Loc 'Azure deployment name', 'Azure deployment adı'}" />
+              <TextBox Text="{Binding Deployment}" />
+            </StackPanel>
+            <StackPanel IsVisible="{Binding NeedsKey}">
+              <TextBlock Classes="label" Text="{l:Loc 'API key', 'API anahtarı'}" />
+              <Grid ColumnDefinitions="*,Auto,Auto">
+                <TextBox Text="{Binding ApiKeyInput}" PasswordChar="•" PlaceholderText="{l:Loc 'Paste a key to save it', 'Kaydetmek için bir anahtar yapıştırın'}" />
+                <Button Grid.Column="1" Margin="8,0,0,0" Content="{l:Loc 'Save to keychain', 'Anahtar zincirine kaydet'}" Command="{Binding SaveKeyCommand}" />
+                <Button Grid.Column="2" Margin="6,0,0,0" Classes="ghost" Content="{l:Loc 'Remove', 'Kaldır'}" Command="{Binding RemoveKeyCommand}" />
+              </Grid>
+            </StackPanel>
+            <TextBlock Classes="meta" Text="{Binding KeyStatus}" Margin="0,4,0,0" />
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+              <Button Classes="ai" Content="{l:Loc 'Test connection', 'Bağlantıyı test et'}" Command="{Binding TestConnectionCommand}" />
+              <TextBlock Classes="meta" Text="{Binding TestResult}" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="360" />
+            </StackPanel>
+            <Border Classes="callout" Margin="0,14,0,0">
+              <StackPanel Spacing="6">
+                <TextBlock Text="{l:Loc 'Privacy', 'Gizlilik'}" FontWeight="SemiBold" />
+                <TextBlock Classes="secondary" FontSize="12" TextWrapping="Wrap" Text="{Binding PrivacyNote}" />
+                <CheckBox IsChecked="{Binding AlwaysPreview}" Content="{l:Loc 'Always show what will be sent before an AI request', 'AI isteğinden önce gönderilecekleri her zaman göster'}" />
+              </StackPanel>
+            </Border>
+            <TextBlock Classes="label" Text="{l:Loc 'Commit message style', 'Commit mesajı stili'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.Styles}" ItemTemplate="{StaticResource OptionLabel}" SelectedItem="{Binding CommitStyle}" Width="200" />
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Classes="label" Text="{l:Loc 'Never send these files to AI (one pattern per line, gitignore style)', 'Bu dosyaları asla AI\'ye gönderme (her satıra bir kalıp, gitignore tarzı)'}" />
+              <Button Grid.Column="1" Classes="link" FontSize="12" Content="{l:Loc 'Reset to defaults', 'Varsayılanlara dön'}" Command="{Binding ResetExclusionsCommand}" VerticalAlignment="Bottom" />
+            </Grid>
+            <TextBox Classes="mono" Text="{Binding ExcludedPatterns}" AcceptsReturn="True" Height="130" />
+          </StackPanel>
+
+          <!-- Git -->
+          <StackPanel IsVisible="{Binding IsGit}" Spacing="2">
+            <TextBlock Classes="label" Text="{l:Loc 'Git executable', 'Git programı'}" />
+            <TextBlock Classes="mono" FontSize="12" Text="{Binding GitVersion}" />
+            <TextBox Text="{Binding GitPath}" PlaceholderText="{l:Loc 'Custom path (optional, restart required)', 'Özel yol (isteğe bağlı, yeniden başlatma gerekir)'}" Margin="0,6,0,0" />
+            <TextBlock Classes="label" Text="{l:Loc 'Your name and email (recorded in every commit)', 'Adınız ve e-postanız (her commit\'e kaydedilir)'}" />
+            <Grid ColumnDefinitions="*,8,*,Auto">
+              <TextBox Text="{Binding UserName}" PlaceholderText="{l:Loc 'Name', 'Ad'}" />
+              <TextBox Grid.Column="2" Text="{Binding UserEmail}" PlaceholderText="{l:Loc 'Email', 'E-posta'}" />
+              <Button Grid.Column="3" Margin="8,0,0,0" Content="{l:Loc 'Save', 'Kaydet'}" Command="{Binding SaveIdentityCommand}" />
+            </Grid>
+            <TextBlock Classes="label" Text="{l:Loc 'Pull strategy', 'Pull stratejisi'}" />
+            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.PullModes}" ItemTemplate="{StaticResource OptionLabel}" SelectedItem="{Binding PullMode}" Width="200" />
+            <CheckBox Margin="0,12,0,0" IsChecked="{Binding AutoFetch}" Content="{l:Loc 'Fetch from remotes automatically in the background', 'Arka planda remote\'lardan otomatik fetch yap'}" />
+            <CheckBox IsChecked="{Binding Autostash}" Content="{l:Loc 'Automatically put local changes aside during rebase and pull (autostash)', 'Rebase ve pull sırasında yerel değişiklikleri otomatik kenara koy (autostash)'}" />
+          </StackPanel>
+        </Panel>
+      </ScrollViewer>
+      <Border Grid.Row="1" Classes="divider-top" Padding="16,12">
+        <Button Classes="primary" HorizontalAlignment="Right" Content="{l:Loc 'Done', 'Bitti'}" Command="{Binding DoneCommand}" />
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

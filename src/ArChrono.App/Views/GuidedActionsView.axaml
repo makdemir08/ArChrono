@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.GuidedActionsView"
+             x:DataType="vm:GuidedActionsViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="28,22" Spacing="14">
+      <TextBlock Classes="title" Text="{l:Loc 'What do you want to do?', 'Ne yapmak istiyorsunuz?'}" />
+      <ItemsControl ItemsSource="{Binding Actions}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel ItemWidth="300" ItemHeight="84" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="vm:GuidedAction">
+            <Button Margin="0,0,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left"
+                    Padding="14,10" Command="{Binding Command}">
+              <Grid ColumnDefinitions="Auto,*">
+                <c:IconView Data="{Binding IconKey, Converter={x:Static infra:IconKeyConverter.Instance}}" Foreground="{DynamicResource Chrono.Safe}"
+                            Width="20" Height="20" VerticalAlignment="Top" Margin="0,2,12,0" />
+                <StackPanel Grid.Column="1" Spacing="3">
+                  <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                  <TextBlock Classes="secondary" Text="{Binding Description}" TextWrapping="Wrap" FontSize="12" />
+                </StackPanel>
+              </Grid>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

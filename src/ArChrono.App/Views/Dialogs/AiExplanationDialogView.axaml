@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:views="using:ArChrono.App.Views"
+             x:Class="ArChrono.App.Views.Dialogs.AiExplanationDialogView"
+             x:DataType="vm:AiExplanationDialogViewModel">
+  <ScrollViewer MaxHeight="620">
+    <views:AiExplanationPanel DataContext="{Binding Explanation}" Margin="6,0,6,12" />
+  </ScrollViewer>
+</UserControl>

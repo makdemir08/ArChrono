@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.Application</RootNamespace>
+    <Description>Application servisleri: UI'ın kullandığı tek giriş katmanı. UI git'i doğrudan çağırmaz.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArChrono.Git\ArChrono.Git.csproj" />
+    <ProjectReference Include="..\ArChrono.Storage\ArChrono.Storage.csproj" />
+    <ProjectReference Include="..\ArChrono.Recovery\ArChrono.Recovery.csproj" />
+    <ProjectReference Include="..\ArChrono.AI\ArChrono.AI.csproj" />
+    <ProjectReference Include="..\ArChrono.Platform\ArChrono.Platform.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ArChrono.Tests" />
+    <InternalsVisibleTo Include="ArChrono.App" />
+  </ItemGroup>
+
+</Project>

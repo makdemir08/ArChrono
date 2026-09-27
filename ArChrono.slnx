@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ArChrono.Localization/ArChrono.Localization.csproj" />
+    <Project Path="src/ArChrono.Git/ArChrono.Git.csproj" />
+    <Project Path="src/ArChrono.Storage/ArChrono.Storage.csproj" />
+    <Project Path="src/ArChrono.Recovery/ArChrono.Recovery.csproj" />
+    <Project Path="src/ArChrono.AI/ArChrono.AI.csproj" />
+    <Project Path="src/ArChrono.Platform/ArChrono.Platform.csproj" />
+    <Project Path="src/ArChrono.Application/ArChrono.Application.csproj" />
+    <Project Path="src/ArChrono.App/ArChrono.App.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/ArChrono.Screenshots/ArChrono.Screenshots.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ArChrono.Tests/ArChrono.Tests.csproj" />
+  </Folder>
+</Solution>

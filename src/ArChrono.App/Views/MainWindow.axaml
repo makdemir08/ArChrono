@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ArChrono.App.ViewModels"
+        xmlns:views="using:ArChrono.App.Views"
+        xmlns:infra="using:ArChrono.App.Infrastructure"
+        xmlns:c="using:ArChrono.App.Controls"
+        xmlns:l="using:ArChrono.App.Localization"
+        x:Class="ArChrono.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding WindowTitle}"
+        Width="1440" Height="900" MinWidth="980" MinHeight="620"
+        WindowStartupLocation="CenterScreen">
+  <Panel>
+    <ContentControl Content="{Binding Content}" />
+
+    <!-- Overlay: diyaloglar ve komut paleti -->
+    <Panel IsVisible="{Binding Overlay, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <Border Name="Backdrop" Background="{DynamicResource Chrono.Backdrop}" PointerPressed="OnBackdropPressed" />
+      <ContentControl Content="{Binding Overlay}">
+        <ContentControl.DataTemplates>
+          <DataTemplate DataType="vm:CommandPaletteViewModel">
+            <views:CommandPaletteView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:DialogViewModelBase">
+            <Border Classes="card" Width="{Binding DialogWidth}" MaxHeight="820" Margin="24"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" BoxShadow="0 24 64 0 #66000000">
+              <Grid RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="*,Auto" Margin="22,18,14,4">
+                  <TextBlock Classes="title" Text="{Binding Title}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                  <Button Grid.Column="1" Classes="icon" Command="{Binding DismissCommand}" ToolTip.Tip="{l:Loc 'Close (Esc)', 'Kapat (Esc)'}">
+                    <c:IconView Data="{StaticResource Icon.Close}" Width="14" Height="14" />
+                  </Button>
+                </Grid>
+                <ContentControl Grid.Row="1" Content="{Binding}" ContentTemplate="{x:Static infra:ViewLocator.Instance}" />
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ContentControl.DataTemplates>
+      </ContentControl>
+    </Panel>
+
+    <!-- Toast'lar -->
+    <ItemsControl ItemsSource="{Binding Toasts}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,48" Width="400">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate DataType="vm:ToastViewModel">
+          <Border Classes="card" Margin="0,6,0,0" Padding="14,12" BoxShadow="0 10 30 0 #55000000">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <c:IconView Data="{Binding IconKey, Converter={x:Static infra:IconKeyConverter.Instance}}"
+                          Foreground="{Binding AccentKey, Converter={x:Static infra:BrushKeyConverter.Instance}}"
+                          Width="18" Height="18" VerticalAlignment="Top" Margin="0,1,10,0" />
+              <StackPanel Grid.Column="1" Spacing="3">
+                <TextBlock Text="{Binding Message}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock Classes="secondary" Text="{Binding Detail}" IsVisible="{Binding HasDetail}" TextWrapping="Wrap" FontSize="12" />
+                <ItemsControl ItemsSource="{Binding Actions}" Margin="0,6,0,0">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Orientation="Horizontal" Spacing="8" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:ToastAction">
+                      <Button Classes="time" Padding="10,3" Content="{Binding Label}"
+                              Command="{Binding $parent[ItemsControl].((vm:ToastViewModel)DataContext).RunActionCommand}"
+                              CommandParameter="{Binding}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+              <Button Grid.Column="2" Classes="icon" Padding="4" VerticalAlignment="Top" Command="{Binding DismissCommand}">
+                <c:IconView Data="{StaticResource Icon.Close}" Width="12" Height="12" />
+              </Button>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </Panel>
+</Window>

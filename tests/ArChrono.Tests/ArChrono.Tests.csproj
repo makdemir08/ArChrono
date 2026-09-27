@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- xunit v3 test projeleri kendi başına çalışan exe'dir. -->
+    <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ArChrono.Git\ArChrono.Git.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.Storage\ArChrono.Storage.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.Recovery\ArChrono.Recovery.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.AI\ArChrono.AI.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.Platform\ArChrono.Platform.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.Application\ArChrono.Application.csproj" />
+    <ProjectReference Include="..\..\src\ArChrono.App\ArChrono.App.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

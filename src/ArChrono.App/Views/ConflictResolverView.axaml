@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:views="using:ArChrono.App.Views"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.ConflictResolverView"
+             x:DataType="vm:ConflictResolverViewModel">
+  <Grid ColumnDefinitions="250,1,*">
+    <Grid RowDefinitions="Auto,*,Auto">
+      <StackPanel Margin="14,12" Spacing="4">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <c:IconView Data="{StaticResource Icon.Conflict}" Foreground="{DynamicResource Chrono.Time}" />
+          <TextBlock Text="{l:Loc 'Resolve conflicts', 'Çakışmaları çöz'}" FontWeight="SemiBold" />
+        </StackPanel>
+        <TextBlock Classes="meta" TextWrapping="Wrap" Text="{l:Loc 'Choose a version for each file, or edit the result yourself.', 'Her dosya için bir sürüm seçin ya da sonucu kendiniz düzenleyin.'}" />
+      </StackPanel>
+      <ListBox Grid.Row="1" Classes="rounded" ItemsSource="{Binding Files}" SelectedItem="{Binding Selected}">
+        <ListBox.ItemTemplate>
+          <DataTemplate DataType="vm:ConflictItem">
+            <StackPanel Margin="4,6" Spacing="2">
+              <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Classes="meta" Text="{Binding Kind}" Foreground="{DynamicResource Chrono.Time}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <Border Grid.Row="2" Classes="callout" Margin="10" IsVisible="{Binding AllResolved}">
+        <StackPanel Spacing="8">
+          <TextBlock Text="{l:Loc 'All conflicts resolved', 'Tüm çakışmalar çözüldü'}" FontWeight="SemiBold" Classes="safe" />
+          <Button Classes="primary" Content="{l:Loc 'Continue', 'Devam et'}" Command="{Binding Owner.ContinueCommand}" HorizontalAlignment="Left" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+    <Grid Grid.Column="2" RowDefinitions="*,Auto,*,Auto" IsVisible="{Binding Selected, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <Grid ColumnDefinitions="*,1,*,1,*">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Classes="section" Text="{l:Loc 'BASE (COMMON ANCESTOR)', 'BASE (ORTAK ATA)'}" Margin="10,8" />
+          <TextBox Classes="mono" Text="{Binding BaseText}" IsReadOnly="True" AcceptsReturn="True" BorderThickness="0" CornerRadius="0" />
+        </DockPanel>
+        <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+        <DockPanel Grid.Column="2">
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="10,5">
+            <TextBlock Classes="section" Text="{l:Loc 'CURRENT (YOURS)', 'MEVCUT (SİZİNKİ)'}" VerticalAlignment="Center" Foreground="{DynamicResource Chrono.Safe}" />
+            <Button Grid.Column="1" Padding="8,3" FontSize="12" Content="{l:Loc 'Use current', 'Mevcudu kullan'}" Command="{Binding UseCurrentCommand}" />
+          </Grid>
+          <TextBox Classes="mono" Text="{Binding CurrentText}" IsReadOnly="True" AcceptsReturn="True" BorderThickness="0" CornerRadius="0" />
+        </DockPanel>
+        <Border Grid.Column="3" Background="{DynamicResource Chrono.BorderSubtle}" />
+        <DockPanel Grid.Column="4">
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="10,5">
+            <TextBlock Classes="section" Text="{l:Loc 'INCOMING (THEIRS)', 'GELEN (ONLARINKİ)'}" VerticalAlignment="Center" Foreground="{DynamicResource Chrono.Info}" />
+            <Button Grid.Column="1" Padding="8,3" FontSize="12" Content="{l:Loc 'Use incoming', 'Geleni kullan'}" Command="{Binding UseIncomingCommand}" />
+          </Grid>
+          <TextBox Classes="mono" Text="{Binding IncomingText}" IsReadOnly="True" AcceptsReturn="True" BorderThickness="0" CornerRadius="0" />
+        </DockPanel>
+      </Grid>
+      <GridSplitter Grid.Row="1" Height="1" ResizeDirection="Rows" />
+      <Grid Grid.Row="2" ColumnDefinitions="*,1,360">
+        <DockPanel>
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="10,5">
+            <TextBlock Classes="section" Text="{l:Loc 'RESULT (EDITABLE)', 'SONUÇ (DÜZENLENEBİLİR)'}" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Classes="primary" Padding="10,4" FontSize="12" Content="{l:Loc 'Save and mark resolved', 'Kaydet ve çözüldü işaretle'}" Command="{Binding SaveResultCommand}" />
+          </Grid>
+          <TextBox Classes="mono" Text="{Binding ResultText}" AcceptsReturn="True" BorderThickness="0" CornerRadius="0" />
+        </DockPanel>
+        <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+        <ScrollViewer Grid.Column="2">
+          <views:AiExplanationPanel DataContext="{Binding Explanation}" />
+        </ScrollViewer>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

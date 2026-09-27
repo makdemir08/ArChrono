@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ArChrono.Platform</RootNamespace>
+    <Description>İşletim sistemi entegrasyonları: veri dizinleri, keychain/credential manager, terminal (ADR-0007, ADR-0008).</Description>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ArChrono.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArChrono.Localization\ArChrono.Localization.csproj" />
+  </ItemGroup>
+
+</Project>

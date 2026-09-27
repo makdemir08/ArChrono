@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.InteractiveRebaseDialogView"
+             x:DataType="vm:InteractiveRebaseDialogViewModel">
+  <UserControl.Styles>
+    <Style Selector="Border.rebase-row.dropped TextBlock">
+      <Setter Property="TextDecorations" Value="Strikethrough" />
+      <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+    </Style>
+    <Style Selector="Border.rebase-row.combined">
+      <Setter Property="Margin" Value="28,0,0,0" />
+    </Style>
+  </UserControl.Styles>
+  <StackPanel Margin="22,6,22,20" Spacing="12">
+    <TextBlock Classes="secondary" TextWrapping="Wrap"
+               Text="{l:Loc 'Oldest commit at the top. Drag rows (or use Alt+↑/↓) to reorder. Squash and fixup combine a commit into the one above it. A recovery point is saved before anything changes.', 'En eski commit en üstte. Sıralamak için satırları sürükleyin (veya Alt+↑/↓ kullanın). Squash ve fixup bir commit\'i üstündekiyle birleştirir. Herhangi bir şey değişmeden önce bir kurtarma noktası kaydedilir.'}" />
+    <ListBox Name="Items" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" Classes="rounded" MaxHeight="380">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="vm:RebaseItemViewModel">
+          <Border Classes="rebase-row" Classes.dropped="{Binding IsDropped}" Classes.combined="{Binding IsCombined}" Padding="4,5" Background="Transparent">
+            <Grid ColumnDefinitions="Auto,Auto,110,*">
+              <c:IconView Data="{StaticResource Icon.Settings}" Width="12" Height="12" Foreground="{DynamicResource Chrono.TextTertiary}" Margin="0,0,8,0" Cursor="SizeNorthSouth" />
+              <TextBlock Grid.Column="1" Classes="mono meta" Text="{Binding ShortSha}" VerticalAlignment="Center" Margin="0,0,10,0" />
+              <ComboBox Grid.Column="2" ItemsSource="{x:Static vm:RebaseItemViewModel.AllActions}" SelectedItem="{Binding Action}" FontSize="12" MinHeight="26" Padding="6,2" />
+              <Panel Grid.Column="3" Margin="10,0,0,0">
+                <TextBlock Text="{Binding Commit.Subject}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding !CanEditMessage}" />
+                <TextBox Text="{Binding Message}" IsVisible="{Binding CanEditMessage}" FontSize="12" MinHeight="26" Padding="6,3" />
+              </Panel>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <TextBlock Classes="danger" FontSize="12" Text="{Binding Error}" IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" TextWrapping="Wrap" />
+    <Grid ColumnDefinitions="Auto,*,Auto">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Button Content="{l:Loc 'Move up', 'Yukarı taşı'}" Command="{Binding MoveUpCommand}" />
+        <Button Content="{l:Loc 'Move down', 'Aşağı taşı'}" Command="{Binding MoveDownCommand}" />
+      </StackPanel>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+        <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+        <Button Classes="primary" Content="{l:Loc 'Rewrite history', 'Geçmişi yeniden yaz'}" Command="{Binding ConfirmCommand}" />
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

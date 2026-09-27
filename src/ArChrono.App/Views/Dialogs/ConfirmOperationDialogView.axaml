@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.ConfirmOperationDialogView"
+             x:DataType="vm:ConfirmOperationDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="16">
+    <Border CornerRadius="8" Padding="14,10" Background="{DynamicResource Chrono.Input}" BorderBrush="{DynamicResource Chrono.BorderSubtle}" BorderThickness="1">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="mono" Text="{Binding Operation}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource Chrono.Danger}" IsVisible="{Binding IsDanger}" />
+        <TextBlock Classes="mono" Text="{Binding Operation}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource Chrono.TextPrimary}" IsVisible="{Binding !IsDanger}" />
+        <TextBlock Classes="mono meta" Text="{Binding CommandPreview}" IsVisible="{Binding IsPro}" TextWrapping="Wrap" />
+      </StackPanel>
+    </Border>
+
+    <ItemsControl ItemsSource="{Binding Effects}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="x:String">
+          <Grid ColumnDefinitions="Auto,*" Margin="0,3">
+            <TextBlock Text="•" Margin="0,0,8,0" Foreground="{DynamicResource Chrono.TextTertiary}" />
+            <TextBlock Grid.Column="1" Text="{Binding}" TextWrapping="Wrap" />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <Border Classes="callout time" IsVisible="{Binding CreatesRecoveryPoint}">
+      <Grid ColumnDefinitions="Auto,*">
+        <c:IconView Data="{StaticResource Icon.Recovery}" Foreground="{DynamicResource Chrono.Time}" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Top" />
+        <StackPanel Grid.Column="1" Spacing="2">
+          <TextBlock>
+            <Run Text="{l:Loc 'Recovery point: ', 'Kurtarma noktası: '}" FontWeight="SemiBold" /><Run Text="{Binding RecoveryTime}" FontWeight="SemiBold" Foreground="{DynamicResource Chrono.Time}" />
+          </TextBlock>
+          <TextBlock Classes="secondary" FontSize="12" TextWrapping="Wrap" Text="{l:Loc 'Saved automatically when you continue. You can undo this in one click.', 'Devam ettiğinizde otomatik kaydedilir. Bunu tek tıkla geri alabilirsiniz.'}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" IsCancel="True" />
+      <Button Classes="danger" Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" IsVisible="{Binding IsDanger}" IsDefault="True" />
+      <Button Classes="primary" Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" IsVisible="{Binding !IsDanger}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

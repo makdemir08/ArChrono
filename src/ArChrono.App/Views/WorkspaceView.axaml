@@ -1,0 +1,219 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.WorkspaceView"
+             x:DataType="vm:WorkspaceViewModel">
+  <Grid ColumnDefinitions="270,1,*">
+    <!-- SOL PANEL: branch'ler + çalışma alanı -->
+    <Border Classes="sidebar">
+      <Grid RowDefinitions="Auto,*,Auto">
+        <TextBox Margin="10,10,10,6" PlaceholderText="{l:Loc 'Filter branches', 'Branch\'leri filtrele'}" Text="{Binding BranchFilter}" FontSize="12" />
+
+        <ScrollViewer Grid.Row="1">
+          <StackPanel Margin="0,2,0,10">
+            <TextBlock Classes="section" Text="{l:Loc 'BRANCHES', 'BRANCH\'LER'}" Margin="14,8,0,4" />
+            <ItemsControl ItemsSource="{Binding LocalBranches}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="vm:BranchItemViewModel">
+                  <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="14,5" CornerRadius="0"
+                          Command="{Binding RevealCommand}" ToolTip.Tip="{Binding Tooltip}">
+                    <Button.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="{l:Loc 'Switch to this branch', 'Bu branch\'e geç'}" Command="{Binding SwitchCommand}" />
+                        <MenuItem Header="{l:Loc 'Merge into current branch…', 'Mevcut branch\'e merge et…'}" Command="{Binding MergeCommand}" />
+                        <MenuItem Header="{l:Loc 'Rebase current branch onto this…', 'Mevcut branch\'i bunun üzerine rebase et…'}" Command="{Binding RebaseCommand}" />
+                        <Separator />
+                        <MenuItem Header="{l:Loc 'Create branch from here…', 'Buradan branch oluştur…'}" Command="{Binding CreateBranchFromCommand}" />
+                        <MenuItem Header="{l:Loc 'Rename…', 'Yeniden adlandır…'}" Command="{Binding RenameCommand}" />
+                        <MenuItem Header="{l:Loc 'Force push (with lease)…', 'Force push (with lease)…'}" Command="{Binding ForcePushCommand}" />
+                        <MenuItem Header="{l:Loc 'Copy name', 'Adı kopyala'}" Command="{Binding CopyNameCommand}" />
+                        <Separator />
+                        <MenuItem Header="{l:Loc 'Delete branch…', 'Branch\'i sil…'}" Command="{Binding DeleteCommand}" />
+                      </ContextMenu>
+                    </Button.ContextMenu>
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                      <c:IconView Data="{StaticResource Icon.Branch}" Width="14" Height="14" Margin="0,0,8,0"
+                                  Foreground="{DynamicResource Chrono.TextTertiary}" IsVisible="{Binding !IsCurrent}" />
+                      <c:IconView Data="{StaticResource Icon.Check}" Width="14" Height="14" Margin="0,0,8,0"
+                                  Foreground="{DynamicResource Chrono.Safe}" IsVisible="{Binding IsCurrent}" />
+                      <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                 FontWeight="{Binding IsCurrent, Converter={x:Static infra:BoolToWeightConverter.Instance}}"
+                                 Foreground="{DynamicResource Chrono.TextPrimary}" />
+                      <TextBlock Grid.Column="2" Classes="meta" Text="{Binding Tracking}" IsVisible="{Binding HasTracking}" Margin="6,0,0,0" VerticalAlignment="Center" />
+                      <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Classes="meta" FontSize="10.5"
+                                 Text="{Binding Status}" IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" Foreground="{DynamicResource Chrono.Time}" />
+                    </Grid>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,6" Margin="0,8,0,0" Command="{Binding ToggleRemotesCommand}">
+              <TextBlock Classes="section" Text="{Binding RemoteHeader}" />
+            </Button>
+            <ItemsControl ItemsSource="{Binding RemoteBranches}" IsVisible="{Binding ShowRemotes}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="vm:BranchItemViewModel">
+                  <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,4" CornerRadius="0" Command="{Binding RevealCommand}">
+                    <Button.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="{l:Loc 'Check out as local branch', 'Yerel branch olarak checkout et'}" Command="{Binding SwitchCommand}" />
+                        <MenuItem Header="{l:Loc 'Merge into current branch…', 'Mevcut branch\'e merge et…'}" Command="{Binding MergeCommand}" />
+                        <MenuItem Header="{l:Loc 'Rebase current branch onto this…', 'Mevcut branch\'i bunun üzerine rebase et…'}" Command="{Binding RebaseCommand}" />
+                        <MenuItem Header="{l:Loc 'Create branch from here…', 'Buradan branch oluştur…'}" Command="{Binding CreateBranchFromCommand}" />
+                      </ContextMenu>
+                    </Button.ContextMenu>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <c:IconView Data="{StaticResource Icon.Branch}" Width="13" Height="13" Foreground="{DynamicResource Chrono.TextTertiary}" />
+                      <TextBlock Text="{Binding Name}" Foreground="{DynamicResource Chrono.TextSecondary}" FontSize="12.5" />
+                    </StackPanel>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,6" Command="{Binding ToggleTagsCommand}">
+              <TextBlock Classes="section" Text="{Binding TagHeader}" />
+            </Button>
+            <ItemsControl ItemsSource="{Binding Tags}" IsVisible="{Binding ShowTags}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="vm:BranchItemViewModel">
+                  <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,4" CornerRadius="0" Command="{Binding RevealCommand}">
+                    <Button.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="{l:Loc 'Create branch from tag…', 'Tag\'den branch oluştur…'}" Command="{Binding CreateBranchFromCommand}" />
+                        <MenuItem Header="{l:Loc 'Delete tag…', 'Tag\'i sil…'}" Command="{Binding DeleteCommand}" />
+                      </ContextMenu>
+                    </Button.ContextMenu>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <c:IconView Data="{StaticResource Icon.Tag}" Width="13" Height="13" Foreground="{DynamicResource Chrono.Time}" />
+                      <TextBlock Text="{Binding Name}" Foreground="{DynamicResource Chrono.TextSecondary}" FontSize="12.5" />
+                    </StackPanel>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,6" Command="{Binding ToggleStashesCommand}">
+              <TextBlock Classes="section" Text="{Binding StashHeader}" />
+            </Button>
+            <ItemsControl ItemsSource="{Binding Stashes}" IsVisible="{Binding ShowStashes}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="vm:StashItemViewModel">
+                  <Border Padding="14,4">
+                    <Border.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="{l:Loc 'Apply (keep in list)', 'Uygula (listede kalsın)'}" Command="{Binding ApplyCommand}" />
+                        <MenuItem Header="{l:Loc 'Restore and remove (pop)', 'Geri getir ve kaldır (pop)'}" Command="{Binding PopCommand}" />
+                        <Separator />
+                        <MenuItem Header="{l:Loc 'Delete…', 'Sil…'}" Command="{Binding DropCommand}" />
+                      </ContextMenu>
+                    </Border.ContextMenu>
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                      <c:IconView Data="{StaticResource Icon.Stash}" Width="13" Height="13" Foreground="{DynamicResource Chrono.TextTertiary}" Margin="0,0,8,0" />
+                      <TextBlock Grid.Column="1" Text="{Binding Message}" TextTrimming="CharacterEllipsis" FontSize="12.5" Foreground="{DynamicResource Chrono.TextSecondary}" ToolTip.Tip="{Binding Message}" />
+                      <Button Grid.Column="2" Classes="link" FontSize="11.5" Content="{l:Loc 'Apply', 'Uygula'}" Command="{Binding ApplyCommand}" Margin="6,0,0,0" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Çalışma alanı özeti -->
+        <Border Grid.Row="2" Classes="divider-top" Padding="10">
+          <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="12,10" Command="{Binding SelectWorkingTreeCommand}"
+                  Background="{DynamicResource Chrono.Panel}">
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="section" Text="{Binding WorkingTreeTitle}" />
+                <c:IconView Grid.Column="1" Data="{StaticResource Icon.ChevronRight}" Width="12" Height="12" Foreground="{DynamicResource Chrono.TextTertiary}" />
+              </Grid>
+              <TextBlock Text="{l:Loc 'Everything is committed', 'Her şey commit edildi'}" Classes="safe" IsVisible="{Binding IsClean}" FontSize="12.5" />
+              <StackPanel Spacing="3" IsVisible="{Binding !IsClean}">
+                <TextBlock FontSize="12.5" IsVisible="{Binding HasConflicted}" Foreground="{DynamicResource Chrono.Time}">
+                  <Run Text="{Binding ConflictedCount}" FontWeight="SemiBold" /><Run Text="{l:Loc ' conflicted', ' çakışmalı'}" />
+                </TextBlock>
+                <TextBlock FontSize="12.5" Foreground="{DynamicResource Chrono.TextPrimary}">
+                  <Run Text="{Binding ModifiedCount}" FontWeight="SemiBold" /><Run Text="{l:Loc ' modified', ' değişti'}" />
+                </TextBlock>
+                <TextBlock FontSize="12.5" Foreground="{DynamicResource Chrono.TextPrimary}">
+                  <Run Text="{Binding UntrackedCount}" FontWeight="SemiBold" /><Run Text="{l:Loc ' untracked', ' takip edilmiyor'}" />
+                </TextBlock>
+                <TextBlock FontSize="12.5" Foreground="{DynamicResource Chrono.Safe}">
+                  <Run Text="{Binding StagedCount}" FontWeight="SemiBold" /><Run Text="{l:Loc ' staged', ' stage edildi'}" />
+                </TextBlock>
+              </StackPanel>
+            </StackPanel>
+          </Button>
+        </Border>
+      </Grid>
+    </Border>
+
+    <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+    <!-- SAĞ: grafik + detay -->
+    <Grid Grid.Column="2" RowDefinitions="*,Auto,*">
+      <Border Classes="panel">
+        <ListBox Name="Graph" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}" Classes="compact">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="vm:CommitRowViewModel">
+              <Grid Height="28" ColumnDefinitions="Auto,*,160,110,70" Background="Transparent">
+                <Grid.ContextMenu>
+                  <ContextMenu IsVisible="{Binding IsCommit}">
+                    <MenuItem Header="{l:Loc '✦ Explain this commit', '✦ Bu commit\'i açıkla'}" Command="{Binding ExplainCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Loc 'Create branch here…', 'Burada branch oluştur…'}" Command="{Binding CreateBranchHereCommand}" />
+                    <MenuItem Header="{l:Loc 'Create tag here…', 'Burada tag oluştur…'}" Command="{Binding CreateTagCommand}" />
+                    <MenuItem Header="{l:Loc 'Check out this commit', 'Bu commit\'i checkout et'}" Command="{Binding CheckoutCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Loc 'Cherry-pick into current branch', 'Mevcut branch\'e cherry-pick et'}" Command="{Binding CherryPickCommand}" />
+                    <MenuItem Header="{l:Loc 'Revert (create undo commit)', 'Revert (geri alan commit oluştur)'}" Command="{Binding RevertCommand}" />
+                    <MenuItem Header="{l:Loc 'Reset current branch to here…', 'Mevcut branch\'i buraya reset et…'}" Command="{Binding ResetHereCommand}" />
+                    <MenuItem Header="{l:Loc 'Edit history from here… (interactive rebase)', 'Geçmişi buradan düzenle… (interactive rebase)'}" Command="{Binding EditHistoryCommand}" />
+                    <Separator />
+                    <MenuItem Header="{l:Loc 'Copy SHA', 'SHA\'yı kopyala'}" Command="{Binding CopyShaCommand}" />
+                  </ContextMenu>
+                </Grid.ContextMenu>
+                <c:CommitGraphCell Width="{Binding $parent[ListBox].((vm:WorkspaceViewModel)DataContext).GraphWidth}"
+                                   Row="{Binding Graph}" IsHead="{Binding IsHead}" IsWorkingTree="{Binding IsWorkingTree}" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="4,0,8,0" ClipToBounds="True">
+                  <ItemsControl ItemsSource="{Binding Badges}" IsVisible="{Binding HasBadges}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="4" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate DataType="vm:RefBadge">
+                        <Border Classes="refbadge" Classes.tag="{Binding IsTag}" Classes.remote="{Binding IsRemote}">
+                          <TextBlock Text="{Binding Display}" />
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <TextBlock Text="{Binding Subject}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Grid.Column="2" Classes="secondary" Text="{Binding Author}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontSize="12" />
+                <TextBlock Grid.Column="3" Classes="meta" Text="{Binding Date}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="4" Classes="mono" Text="{Binding ShortSha}" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Chrono.TextTertiary}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+      <Button Grid.Row="0" Content="{l:Loc 'Load more history', 'Daha fazla geçmiş yükle'}" Command="{Binding LoadMoreCommand}" IsVisible="{Binding HasMore}"
+              HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,10" />
+
+      <GridSplitter Grid.Row="1" Height="1" ResizeDirection="Rows" />
+
+      <Border Grid.Row="2" Classes="panel">
+        <ContentControl Content="{Binding Details}" />
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

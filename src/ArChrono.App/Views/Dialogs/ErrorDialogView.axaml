@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.ErrorDialogView"
+             x:DataType="vm:ErrorDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="14">
+    <TextBlock Text="{Binding Explanation}" TextWrapping="Wrap" />
+    <Border Classes="callout" IsVisible="{Binding HasSuggestion}">
+      <Grid ColumnDefinitions="Auto,*">
+        <c:IconView Data="{StaticResource Icon.Info}" Foreground="{DynamicResource Chrono.Safe}" Margin="0,0,10,0" VerticalAlignment="Top" />
+        <TextBlock Grid.Column="1" Text="{Binding Suggestion}" TextWrapping="Wrap" />
+      </Grid>
+    </Border>
+    <Button Classes="link" Content="{l:Loc 'Technical details', 'Teknik ayrıntılar'}" Command="{Binding ToggleDetailsCommand}" IsVisible="{Binding HasTechnicalDetails}" HorizontalAlignment="Left" />
+    <Border IsVisible="{Binding ShowDetails}" Background="{DynamicResource Chrono.Input}" CornerRadius="6" Padding="10" MaxHeight="220">
+      <ScrollViewer>
+        <SelectableTextBlock Classes="mono" FontSize="11.5" Text="{Binding TechnicalDetails}" TextWrapping="Wrap" />
+      </ScrollViewer>
+    </Border>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Classes="time" Content="{l:Loc 'Undo', 'Geri al'}" Command="{Binding UndoCommand}" IsVisible="{Binding CanUndo}" />
+      <Button Classes="primary" Content="{l:Loc 'OK', 'Tamam'}" Command="{Binding OkCommand}" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

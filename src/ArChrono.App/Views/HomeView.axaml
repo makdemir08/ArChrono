@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:views="using:ArChrono.App.Views"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+  <Grid ColumnDefinitions="420,*">
+    <!-- Sol: marka + eylemler -->
+    <Border Classes="sidebar divider-right" Padding="40,44,32,32">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Spacing="6">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Width="34" Height="34" CornerRadius="9" Background="{DynamicResource Chrono.SafeMuted}">
+              <c:IconView Data="{StaticResource Icon.TimeMachine}" Foreground="{DynamicResource Chrono.Safe}" Width="20" Height="20" />
+            </Border>
+            <TextBlock Text="ArChrono" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" />
+          </StackPanel>
+          <TextBlock Classes="headline" Text="{l:Loc 'Git without fear.', 'Git, korkmadan.'}" Margin="0,28,0,0" />
+          <TextBlock Classes="secondary" TextWrapping="Wrap" FontSize="14" LineHeight="21"
+                     Text="{l:Loc 'Every risky operation gets a recovery point. Your working tree has a time machine. Nothing you do in Git has to be lost.', 'Her riskli işlem için bir kurtarma noktası alınır. Çalışma alanınızın bir zaman makinesi var. Git\'te yaptığınız hiçbir şey kaybolmak zorunda değil.'}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Spacing="6">
+          <TextBlock Classes="meta" Text="{Binding GitStatus}" TextWrapping="Wrap" />
+          <TextBlock Classes="danger" Text="{Binding GitInstallHint}" IsVisible="{Binding !GitAvailable}" TextWrapping="Wrap" FontSize="12" />
+        </StackPanel>
+
+        <StackPanel Spacing="10" Margin="0,36,0,0">
+          <Button Classes="primary" HorizontalAlignment="Stretch" Padding="14,10" Command="{Binding OpenCommand}" IsEnabled="{Binding GitAvailable}">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <c:IconView Data="{StaticResource Icon.Folder}" Foreground="{DynamicResource Chrono.SafeText}" />
+              <TextBlock Text="{l:Loc 'Open a repository', 'Depo aç'}" Foreground="{DynamicResource Chrono.SafeText}" FontWeight="SemiBold" />
+            </StackPanel>
+          </Button>
+          <Button HorizontalAlignment="Stretch" Padding="14,10" Command="{Binding CloneCommand}" IsEnabled="{Binding GitAvailable}">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <c:IconView Data="{StaticResource Icon.Download}" Foreground="{DynamicResource Chrono.TextSecondary}" />
+              <TextBlock Text="{l:Loc 'Clone from URL', 'URL\'den klonla'}" />
+            </StackPanel>
+          </Button>
+          <Button HorizontalAlignment="Stretch" Padding="14,10" Command="{Binding InitCommand}" IsEnabled="{Binding GitAvailable}">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <c:IconView Data="{StaticResource Icon.Plus}" Foreground="{DynamicResource Chrono.TextSecondary}" />
+              <TextBlock Text="{l:Loc 'Create a new repository', 'Yeni depo oluştur'}" />
+            </StackPanel>
+          </Button>
+          <Border Classes="callout" Margin="0,18,0,0" IsVisible="{Binding IsBusy}">
+            <StackPanel Spacing="6">
+              <ProgressBar IsIndeterminate="True" />
+              <TextBlock Classes="secondary" Text="{Binding BusyText}" TextWrapping="Wrap" FontSize="12" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- Sağ: onboarding + son kullanılanlar -->
+    <views:ShellToolbar Grid.Column="1" DataContext="{Binding Shell}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,16,0" ZIndex="1" />
+    <ScrollViewer Grid.Column="1">
+      <StackPanel Margin="48,44,48,32" Spacing="28" MaxWidth="880" HorizontalAlignment="Left">
+        <Border Classes="card" Padding="24" IsVisible="{Binding ShowOnboarding}">
+          <StackPanel Spacing="14">
+            <TextBlock Classes="title" Text="{l:Loc 'How do you use Git?', 'Git\'i nasıl kullanıyorsunuz?'}" />
+            <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{l:Loc 'You can switch any time from the top bar. Both modes have the same safety net.', 'Üst çubuktan istediğiniz zaman değiştirebilirsiniz. İki modda da aynı güvenlik ağı vardır.'}" />
+            <Grid ColumnDefinitions="*,16,*">
+              <Button Padding="18" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ChooseGuidedCommand}">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <c:IconView Data="{StaticResource Icon.Compass}" Foreground="{DynamicResource Chrono.Safe}" Width="20" Height="20" />
+                    <TextBlock Text="{l:Loc 'Guided', 'Rehberli'}" FontSize="15" FontWeight="SemiBold" />
+                  </StackPanel>
+                  <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{l:Loc 'I\'m new to Git or prefer plain language: \'Save my current work\', \'Combine these changes\'.', 'Git\'e yeniyim veya sade bir dil tercih ederim: \'Mevcut çalışmamı kaydet\', \'Bu değişiklikleri birleştir\'.'}" />
+                </StackPanel>
+              </Button>
+              <Button Grid.Column="2" Padding="18" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ChooseProCommand}">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <c:IconView Data="{StaticResource Icon.Zap}" Foreground="{DynamicResource Chrono.Time}" Width="20" Height="20" />
+                    <TextBlock Text="Pro" FontSize="15" FontWeight="SemiBold" />
+                  </StackPanel>
+                  <TextBlock Classes="secondary" TextWrapping="Wrap" Text="{l:Loc 'I know Git: show commit, rebase, reflog and the exact commands being run.', 'Git\'i biliyorum: commit, rebase, reflog ve çalıştırılan komutların tam hâlini göster.'}" />
+                </StackPanel>
+              </Button>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Spacing="10">
+          <TextBlock Classes="section" Text="{l:Loc 'RECENT REPOSITORIES', 'SON KULLANILAN DEPOLAR'}" />
+          <TextBlock Classes="secondary" Text="{l:Loc 'Repositories you open appear here.', 'Açtığınız depolar burada görünür.'}" IsVisible="{Binding !HasRecent}" />
+          <ItemsControl ItemsSource="{Binding Recent}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="vm:RecentRepositoryItem">
+                <Button Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="12,10" Margin="0,2"
+                        Command="{Binding Owner.OpenRecentCommand}" CommandParameter="{Binding}">
+                  <Button.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{l:Loc 'Favorite', 'Favori'}" Command="{Binding Owner.ToggleFavoriteCommand}" CommandParameter="{Binding}" />
+                      <MenuItem Header="{l:Loc 'Remove from list', 'Listeden kaldır'}" Command="{Binding Owner.RemoveCommand}" CommandParameter="{Binding}" />
+                    </ContextMenu>
+                  </Button.ContextMenu>
+                  <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Width="36" Height="36" CornerRadius="8" Background="{DynamicResource Chrono.Hover}" Margin="0,0,14,0">
+                      <TextBlock Text="{Binding Initial}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="15"
+                                 Foreground="{DynamicResource Chrono.Safe}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                      <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource Chrono.TextPrimary}" />
+                        <TextBlock Text="★" Classes="time" IsVisible="{Binding IsFavorite}" />
+                      </StackPanel>
+                      <TextBlock Classes="meta" Text="{Binding Path}" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Classes="meta" Text="{Binding LastOpened}" VerticalAlignment="Center" />
+                  </Grid>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <Border Classes="card" Padding="20">
+          <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+            <TextBlock Grid.ColumnSpan="3" Classes="section" Text="{l:Loc 'THE SAFETY NET', 'GÜVENLİK AĞI'}" Margin="0,0,0,12" />
+            <StackPanel Grid.Row="1" Spacing="6" Margin="0,0,16,0">
+              <c:IconView Data="{StaticResource Icon.Recovery}" Foreground="{DynamicResource Chrono.Time}" Width="20" Height="20" HorizontalAlignment="Left" />
+              <TextBlock Text="{l:Loc 'Automatic recovery points', 'Otomatik kurtarma noktaları'}" FontWeight="SemiBold" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap" FontSize="12" Text="{l:Loc 'Before every reset, rebase, delete or amend. One click to undo.', 'Her reset, rebase, silme veya amend öncesinde. Geri almak tek tık.'}" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="6" Margin="0,0,16,0">
+              <c:IconView Data="{StaticResource Icon.TimeMachine}" Foreground="{DynamicResource Chrono.Safe}" Width="20" Height="20" HorizontalAlignment="Left" />
+              <TextBlock Text="{l:Loc 'Code Time Machine', 'Kod Zaman Makinesi'}" FontWeight="SemiBold" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap" FontSize="12" Text="{l:Loc 'Uncommitted work is snapshotted as you go — independent of commits.', 'Commit edilmemiş çalışmanın siz çalıştıkça anlık görüntüsü alınır — commit\'lerden bağımsız.'}" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="2" Spacing="6">
+              <c:IconView Data="{StaticResource Icon.Shield}" Foreground="{DynamicResource Chrono.Info}" Width="20" Height="20" HorizontalAlignment="Left" />
+              <TextBlock Text="{l:Loc 'Local-first', 'Önce yerel'}" FontWeight="SemiBold" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap" FontSize="12" Text="{l:Loc 'Your code stays on this computer. AI is off until you choose a provider.', 'Kodunuz bu bilgisayarda kalır. Bir sağlayıcı seçene kadar AI kapalıdır.'}" />
+            </StackPanel>
+          </Grid>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.RestorePlanDialogView"
+             x:DataType="vm:RestorePlanDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="14">
+    <TextBlock Classes="secondary" TextWrapping="Wrap">
+      <Run Text="{l:Loc 'Returns to how things were at ', ''}" /><Run Text="{Binding TargetTime}" FontWeight="SemiBold" Foreground="{DynamicResource Chrono.Time}" /><Run Text="{l:Loc '. The current state is saved first, so this is reversible too.', ' anındaki hâline döner. Mevcut durum önce kaydedilir; yani bu da geri alınabilir.'}" />
+    </TextBlock>
+
+    <Border Background="{DynamicResource Chrono.Input}" CornerRadius="7" Padding="2" HorizontalAlignment="Left" IsVisible="{Binding CanChangeMode}">
+      <StackPanel Orientation="Horizontal">
+        <RadioButton Classes="segment" GroupName="mode" IsChecked="{Binding ModeEverything}" Content="{l:Loc 'Everything', 'Her şey'}" />
+        <RadioButton Classes="segment" GroupName="mode" IsChecked="{Binding ModeFiles}" Content="{l:Loc 'Files only', 'Yalnızca dosyalar'}" />
+        <RadioButton Classes="segment" GroupName="mode" IsChecked="{Binding ModeBranches}" Content="{l:Loc 'Branches only', 'Yalnızca branch\'ler'}" />
+      </StackPanel>
+    </Border>
+    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
+
+    <TextBlock Classes="section" Text="{l:Loc 'STEPS', 'ADIMLAR'}" />
+    <ScrollViewer MaxHeight="320">
+      <ItemsControl ItemsSource="{Binding Actions}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="vm:RestoreActionItem">
+            <Border Classes="card" Padding="12,9" Margin="0,0,0,6">
+              <Grid ColumnDefinitions="Auto,*">
+                <CheckBox IsChecked="{Binding Selected}" VerticalAlignment="Top" />
+                <StackPanel Grid.Column="1" Spacing="3" Margin="4,0,0,0">
+                  <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                  <TextBlock Classes="mono meta" Text="{Binding CommandPreview}" IsVisible="{Binding ShowCommand}" TextWrapping="Wrap" />
+                  <TextBlock Classes="time" FontSize="12" Text="{Binding Warning}" IsVisible="{Binding HasWarning}" TextWrapping="Wrap" />
+                  <TextBlock Classes="danger" FontSize="12" Text="{l:Loc 'Changes the server — affects everyone using this branch.', 'Sunucuyu değiştirir — bu branch\'i kullanan herkesi etkiler.'}" IsVisible="{Binding IsRemote}" TextWrapping="Wrap" />
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <ItemsControl ItemsSource="{Binding Notes}" IsVisible="{Binding HasNotes}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="x:String">
+          <Grid ColumnDefinitions="Auto,*" Margin="0,2">
+            <c:IconView Data="{StaticResource Icon.Info}" Width="14" Height="14" Foreground="{DynamicResource Chrono.TextTertiary}" Margin="0,1,8,0" VerticalAlignment="Top" />
+            <TextBlock Grid.Column="1" Classes="secondary" FontSize="12" Text="{Binding}" TextWrapping="Wrap" />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <CheckBox IsVisible="{Binding HasRemote}" IsChecked="{Binding RemoteAcknowledged}"
+              Content="{l:Loc 'I understand the selected server step replaces the branch on the remote.', 'Seçili sunucu adımının uzak depodaki branch\'in yerine geçeceğini anlıyorum.'}" />
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+      <Button Classes="primary" Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.AiPreviewDialogView"
+             x:DataType="vm:AiPreviewDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="14">
+    <Border Classes="callout ai">
+      <Grid ColumnDefinitions="Auto,*">
+        <c:IconView Data="{StaticResource Icon.Sparkles}" Foreground="{DynamicResource Chrono.Ai}" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Top" />
+        <StackPanel Grid.Column="1" Spacing="3">
+          <TextBlock>
+            <Run Text="{l:Loc 'Destination: ', 'Hedef: '}" /><Run Text="{Binding Destination}" FontWeight="SemiBold" />
+          </TextBlock>
+          <TextBlock Classes="secondary" FontSize="12" Text="{Binding Summary}" />
+          <TextBlock Classes="safe" FontSize="12" Text="{l:Loc 'Stays on this computer.', 'Bu bilgisayarda kalır.'}" IsVisible="{Binding IsLocal}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,16,*">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="section" Text="{l:Loc 'WILL BE SHARED', 'PAYLAŞILACAK'}" />
+        <ScrollViewer MaxHeight="140">
+          <ItemsControl ItemsSource="{Binding IncludedFiles}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Classes="mono" FontSize="11.5" Text="{Binding}" Margin="0,1" TextTrimming="CharacterEllipsis" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </StackPanel>
+      <StackPanel Grid.Column="2" Spacing="6">
+        <TextBlock Classes="section" Text="{l:Loc 'NEVER SHARED', 'ASLA PAYLAŞILMAZ'}" Foreground="{DynamicResource Chrono.Safe}" />
+        <TextBlock Classes="meta" Text="{l:Loc 'Nothing excluded.', 'Hariç tutulan bir şey yok.'}" IsVisible="{Binding !HasExcluded}" />
+        <ScrollViewer MaxHeight="140">
+          <ItemsControl ItemsSource="{Binding ExcludedFiles}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Classes="mono" FontSize="11.5" Text="{Binding}" Margin="0,1" TextWrapping="Wrap" Foreground="{DynamicResource Chrono.TextSecondary}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </StackPanel>
+    </Grid>
+
+    <Button Classes="link" Content="{l:Loc 'Show the exact text that will be sent', 'Gönderilecek metnin tam hâlini göster'}" Command="{Binding ToggleFullTextCommand}" HorizontalAlignment="Left" />
+    <Border IsVisible="{Binding ShowFullText}" Background="{DynamicResource Chrono.Input}" CornerRadius="6" Padding="10" Height="240">
+      <ScrollViewer>
+        <SelectableTextBlock Classes="mono" FontSize="11" Text="{Binding FullText}" TextWrapping="Wrap" />
+      </ScrollViewer>
+    </Border>
+
+    <Grid ColumnDefinitions="*,Auto">
+      <CheckBox Content="{l:Loc 'Don\'t ask again (you can turn previews back on in Settings)', 'Tekrar sorma (önizlemeleri Ayarlar\'dan yeniden açabilirsiniz)'}" IsChecked="{Binding DontAskAgain}" FontSize="12" />
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+        <Button Classes="ai" Content="{l:Loc 'Send', 'Gönder'}" Command="{Binding SendCommand}" FontWeight="SemiBold" />
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

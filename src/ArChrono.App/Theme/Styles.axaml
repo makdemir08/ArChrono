@@ -1,0 +1,366 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:ArChrono.App.Controls">
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Window}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.secondary">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+  </Style>
+  <Style Selector="TextBlock.tertiary">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+    <Setter Property="FontSize" Value="11.5" />
+  </Style>
+  <Style Selector="TextBlock.meta">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+    <Setter Property="FontSize" Value="11.5" />
+  </Style>
+  <Style Selector="TextBlock.section">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+    <Setter Property="FontSize" Value="10.5" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LetterSpacing" Value="0.8" />
+  </Style>
+  <Style Selector="TextBlock.title">
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.headline">
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-0.4" />
+  </Style>
+  <Style Selector="TextBlock.mono">
+    <Setter Property="FontFamily" Value="{StaticResource Chrono.MonoFont}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="SelectableTextBlock.mono">
+    <Setter Property="FontFamily" Value="{StaticResource Chrono.MonoFont}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="TextBox.mono">
+    <Setter Property="FontFamily" Value="{StaticResource Chrono.MonoFont}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="TextBlock.safe">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Safe}" />
+  </Style>
+  <Style Selector="TextBlock.time">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Time}" />
+  </Style>
+  <Style Selector="TextBlock.danger">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Danger}" />
+  </Style>
+  <Style Selector="TextBlock.ai">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Ai}" />
+  </Style>
+
+  <!-- Paneller -->
+  <Style Selector="Border.panel">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Panel}" />
+  </Style>
+  <Style Selector="Border.sidebar">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Sidebar}" />
+  </Style>
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Elevated}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderSubtle}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="10" />
+  </Style>
+  <Style Selector="Border.divider-bottom">
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderSubtle}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+  </Style>
+  <Style Selector="Border.divider-top">
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderSubtle}" />
+    <Setter Property="BorderThickness" Value="0,1,0,0" />
+  </Style>
+  <Style Selector="Border.divider-right">
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderSubtle}" />
+    <Setter Property="BorderThickness" Value="0,0,1,0" />
+  </Style>
+  <Style Selector="Border.badge">
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Padding" Value="5,1" />
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Border.badge TextBlock">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="Medium" />
+  </Style>
+  <Style Selector="Border.badge.safe">
+    <Setter Property="Background" Value="{DynamicResource Chrono.SafeMuted}" />
+  </Style>
+  <Style Selector="Border.badge.safe TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Safe}" />
+  </Style>
+  <Style Selector="Border.badge.time">
+    <Setter Property="Background" Value="{DynamicResource Chrono.TimeMuted}" />
+  </Style>
+  <Style Selector="Border.badge.time TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Time}" />
+  </Style>
+  <Style Selector="Border.badge.danger">
+    <Setter Property="Background" Value="{DynamicResource Chrono.DangerMuted}" />
+  </Style>
+  <Style Selector="Border.badge.danger TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Danger}" />
+  </Style>
+  <Style Selector="Border.badge.ai">
+    <Setter Property="Background" Value="{DynamicResource Chrono.AiMuted}" />
+  </Style>
+  <Style Selector="Border.badge.ai TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Ai}" />
+  </Style>
+  <Style Selector="Border.refbadge">
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Padding" Value="5,1" />
+    <Setter Property="Background" Value="{DynamicResource Chrono.SafeMuted}" />
+  </Style>
+  <Style Selector="Border.refbadge TextBlock">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Safe}" />
+  </Style>
+  <Style Selector="Border.refbadge.tag">
+    <Setter Property="Background" Value="{DynamicResource Chrono.TimeMuted}" />
+  </Style>
+  <Style Selector="Border.refbadge.tag TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Time}" />
+  </Style>
+  <Style Selector="Border.refbadge.remote">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+  <Style Selector="Border.refbadge.remote TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+  </Style>
+  <Style Selector="Border.banner">
+    <Setter Property="Background" Value="{DynamicResource Chrono.TimeMuted}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.Time}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="Padding" Value="14,8" />
+  </Style>
+  <Style Selector="Border.callout">
+    <Setter Property="Background" Value="{DynamicResource Chrono.SafeMuted}" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Padding" Value="12,10" />
+  </Style>
+  <Style Selector="Border.callout.time">
+    <Setter Property="Background" Value="{DynamicResource Chrono.TimeMuted}" />
+  </Style>
+  <Style Selector="Border.callout.danger">
+    <Setter Property="Background" Value="{DynamicResource Chrono.DangerMuted}" />
+  </Style>
+  <Style Selector="Border.callout.ai">
+    <Setter Property="Background" Value="{DynamicResource Chrono.AiMuted}" />
+  </Style>
+
+  <!-- Düğmeler -->
+  <Style Selector="Button">
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="10,5" />
+    <Setter Property="FontSize" Value="12.5" />
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Selected}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+  </Style>
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Safe}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.SafeText}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Safe}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.SafeText}" />
+    <Setter Property="Opacity" Value="0.9" />
+  </Style>
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Danger}" />
+    <Setter Property="Foreground" Value="#FFFFFF" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Danger}" />
+    <Setter Property="Foreground" Value="#FFFFFF" />
+    <Setter Property="Opacity" Value="0.9" />
+  </Style>
+  <Style Selector="Button.time">
+    <Setter Property="Background" Value="{DynamicResource Chrono.TimeMuted}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Time}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.ai">
+    <Setter Property="Background" Value="{DynamicResource Chrono.AiMuted}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Ai}" />
+  </Style>
+  <Style Selector="Button.ghost">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+  </Style>
+  <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+  <Style Selector="Button.icon">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="6" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+  </Style>
+  <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+  <Style Selector="Button.link">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Safe}" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.link:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.Safe}" />
+  </Style>
+  <Style Selector="Button:disabled">
+    <Setter Property="Opacity" Value="0.45" />
+  </Style>
+
+  <!-- Nav rail -->
+  <Style Selector="RadioButton.rail">
+    <Setter Property="Width" Value="44" />
+    <Setter Property="Height" Value="44" />
+    <Setter Property="Margin" Value="0,2" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="Root" Background="Transparent" CornerRadius="10">
+          <Grid>
+            <Border Name="Indicator" Width="3" HorizontalAlignment="Left" Margin="-6,10" CornerRadius="2" Background="{DynamicResource Chrono.Safe}" IsVisible="False" />
+            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextTertiary}" />
+  </Style>
+  <Style Selector="RadioButton.rail:pointerover /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+  <Style Selector="RadioButton.rail:checked">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+  </Style>
+  <Style Selector="RadioButton.rail:checked /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Selected}" />
+  </Style>
+  <Style Selector="RadioButton.rail:checked /template/ Border#Indicator">
+    <Setter Property="IsVisible" Value="True" />
+  </Style>
+
+  <!-- Segmented (Guided / Pro, sekmeler) -->
+  <Style Selector="RadioButton.segment">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="Root" Background="Transparent" CornerRadius="5" Padding="10,3">
+          <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="RadioButton.segment:checked /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Selected}" />
+  </Style>
+  <Style Selector="RadioButton.segment:checked">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="RadioButton.tab">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="Root" Background="Transparent" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="10,8">
+          <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextSecondary}" />
+    <Setter Property="FontSize" Value="12.5" />
+  </Style>
+  <Style Selector="RadioButton.tab:checked">
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+  </Style>
+  <Style Selector="RadioButton.tab:checked /template/ Border#Root">
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.Safe}" />
+  </Style>
+  <Style Selector="RadioButton.tab:pointerover /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+
+  <!-- Listeler -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem">
+    <Setter Property="Padding" Value="8,0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="CornerRadius" Value="0" />
+  </Style>
+  <Style Selector="ListBox.compact ListBoxItem">
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Hover}" />
+  </Style>
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Selected}" />
+  </Style>
+  <Style Selector="ListBoxItem:selected:focus /template/ ContentPresenter, ListBoxItem:selected:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Selected}" />
+  </Style>
+  <Style Selector="ListBox.rounded ListBoxItem">
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Margin" Value="6,1" />
+  </Style>
+
+  <!-- Girdi -->
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Input}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderStrong}" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.Safe}" />
+    <Setter Property="Background" Value="{DynamicResource Chrono.Input}" />
+  </Style>
+  <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Input}" />
+  </Style>
+
+  <Style Selector="GridSplitter">
+    <Setter Property="Background" Value="{DynamicResource Chrono.BorderSubtle}" />
+  </Style>
+
+  <Style Selector="c|IconView">
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+  </Style>
+
+  <Style Selector="ToolTip">
+    <Setter Property="Background" Value="{DynamicResource Chrono.Elevated}" />
+    <Setter Property="Foreground" Value="{DynamicResource Chrono.TextPrimary}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Chrono.BorderStrong}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+</Styles>

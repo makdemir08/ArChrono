@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.ConsoleView"
+             x:DataType="vm:ConsoleViewModel">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Grid ColumnDefinitions="Auto,*,Auto" Margin="12,6">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <c:IconView Data="{StaticResource Icon.Terminal}" Foreground="{DynamicResource Chrono.Safe}" Width="14" Height="14" />
+        <TextBlock Classes="section" Text="{l:Loc 'GIT CONSOLE', 'GIT KONSOLU'}" VerticalAlignment="Center" />
+        <TextBlock Classes="meta" Text="{l:Loc 'Every Git command ArChrono runs for you. Commands you type here get a recovery point too.', 'ArChrono\'nun sizin için çalıştırdığı her Git komutu. Buraya yazdığınız komutlar için de kurtarma noktası alınır.'}" VerticalAlignment="Center" />
+      </StackPanel>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+        <Button Classes="ghost" Padding="8,2" FontSize="12" Content="{l:Loc 'Open terminal', 'Terminal aç'}" Command="{Binding OpenTerminalCommand}" />
+        <Button Classes="ghost" Padding="8,2" FontSize="12" Content="{l:Loc 'Clear', 'Temizle'}" Command="{Binding ClearCommand}" />
+      </StackPanel>
+    </Grid>
+    <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" Classes="compact" Name="Entries">
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="vm:ConsoleEntryViewModel">
+          <StackPanel Margin="12,2">
+            <Grid ColumnDefinitions="64,*,70,60">
+              <TextBlock Classes="mono meta" Text="{Binding Time}" />
+              <Button Grid.Column="1" Classes="link" HorizontalAlignment="Left" Command="{Binding ToggleCommand}">
+                <TextBlock Classes="mono" Text="{Binding Command}" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource Chrono.TextPrimary}" />
+              </Button>
+              <TextBlock Grid.Column="2" Classes="mono meta" Text="{Binding Duration}" HorizontalAlignment="Right" />
+              <TextBlock Grid.Column="3" Classes="mono meta" Text="{Binding ExitText}" HorizontalAlignment="Right"
+                         Foreground="{DynamicResource Chrono.Safe}" IsVisible="{Binding !Failed}" />
+              <TextBlock Grid.Column="3" Classes="mono meta" Text="{Binding ExitText}" HorizontalAlignment="Right"
+                         Foreground="{DynamicResource Chrono.Danger}" IsVisible="{Binding Failed}" />
+            </Grid>
+            <SelectableTextBlock Classes="mono" FontSize="11.5" Margin="64,2,0,6" Text="{Binding Output}" TextWrapping="Wrap"
+                                 Foreground="{DynamicResource Chrono.TextSecondary}" IsVisible="{Binding IsExpanded}" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="12,6">
+      <TextBlock Classes="mono" Text="git" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource Chrono.Safe}" />
+      <TextBox Grid.Column="1" Classes="mono" Text="{Binding CommandText}" PlaceholderText="log --oneline -5" Name="Input" />
+      <Button Grid.Column="2" Margin="8,0,0,0" Content="{l:Loc 'Run', 'Çalıştır'}" Command="{Binding RunCommand}" IsDefault="False" />
+    </Grid>
+  </Grid>
+</UserControl>

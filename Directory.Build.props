@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <!-- Hedef: .NET 10. Yalnızca eski SDK ile doğrulama için: -p:ArChronoTargetFramework=net9.0 -->
+    <ArChronoTargetFramework Condition="'$(ArChronoTargetFramework)' == ''">net10.0</ArChronoTargetFramework>
+    <TargetFramework>$(ArChronoTargetFramework)</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <Version>0.1.0</Version>
+    <Company>ArSoft</Company>
+    <Product>ArChrono</Product>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+</Project>

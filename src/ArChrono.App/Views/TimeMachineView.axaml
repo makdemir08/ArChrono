@@ -1,0 +1,165 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels"
+             xmlns:views="using:ArChrono.App.Views"
+             xmlns:c="using:ArChrono.App.Controls"
+             xmlns:infra="using:ArChrono.App.Infrastructure"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.TimeMachineView"
+             x:DataType="vm:TimeMachineViewModel">
+  <Grid RowDefinitions="Auto,*">
+    <!-- Başlık + zaman ekseni -->
+    <Border Classes="panel divider-bottom" Padding="20,14,20,8">
+      <Grid RowDefinitions="Auto,Auto">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <c:IconView Data="{StaticResource Icon.TimeMachine}" Foreground="{DynamicResource Chrono.Safe}" Width="22" Height="22" />
+            <StackPanel>
+              <TextBlock Classes="title" Text="{l:Loc 'Time Machine', 'Zaman Makinesi'}" />
+              <TextBlock Classes="meta" Text="{Binding StorageText}" />
+            </StackPanel>
+          </StackPanel>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+            <Button Classes="icon" Command="{Binding PreviousDayCommand}" ToolTip.Tip="{l:Loc 'Previous day', 'Önceki gün'}">
+              <c:IconView Data="{StaticResource Icon.ChevronLeft}" />
+            </Button>
+            <TextBlock Text="{Binding DayTitle}" FontWeight="SemiBold" VerticalAlignment="Center" MinWidth="120" TextAlignment="Center" />
+            <Button Classes="icon" Command="{Binding NextDayCommand}" IsEnabled="{Binding CanGoNext}" ToolTip.Tip="{l:Loc 'Next day', 'Sonraki gün'}">
+              <c:IconView Data="{StaticResource Icon.ChevronRight}" />
+            </Button>
+            <Button Classes="primary" Margin="12,0,0,0" Command="{Binding SaveSnapshotCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <c:IconView Data="{StaticResource Icon.Snapshot}" Width="14" Height="14" Foreground="{DynamicResource Chrono.SafeText}" />
+                <TextBlock Text="{l:Loc 'Save snapshot now', 'Şimdi anlık görüntü kaydet'}" Foreground="{DynamicResource Chrono.SafeText}" FontWeight="SemiBold" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </Grid>
+        <c:ChronoStrip Grid.Row="1" Name="DayStrip" Height="48" Margin="0,10,0,0" Marks="{Binding Marks}" Start="{Binding RangeStart}" End="{Binding RangeEnd}"
+                       SelectedPayload="{Binding SelectedPayload}" ShowLabels="True" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="260,1,300,1,*">
+      <!-- Snapshot listesi -->
+      <Border Classes="sidebar">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <TextBlock Classes="section" Text="{l:Loc 'SNAPSHOTS', 'ANLIK GÖRÜNTÜLER'}" Margin="16,12,0,6" />
+          <TextBlock Grid.Row="1" Classes="secondary" Margin="16,4" TextWrapping="Wrap" FontSize="12"
+                     Text="{l:Loc 'No snapshots this day. ArChrono saves one automatically when files change, before every risky operation, and when you close the app.', 'Bu gün anlık görüntü yok. ArChrono; dosyalar değiştiğinde, her riskli işlemden önce ve uygulamayı kapattığınızda otomatik olarak kaydeder.'}"
+                     IsVisible="{Binding !HasSnapshots}" />
+          <ListBox Grid.Row="1" Classes="rounded" ItemsSource="{Binding Snapshots}" SelectedItem="{Binding Selected}">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="vm:SnapshotItem">
+                <Grid ColumnDefinitions="Auto,*" Margin="2,6">
+                  <Border Width="8" Height="8" CornerRadius="4" VerticalAlignment="Top" Margin="0,5,10,0"
+                          Background="{Binding AccentKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Classes="mono" Text="{Binding Time}" FontWeight="SemiBold" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding Title}" FontSize="12" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="meta" Text="{Binding Meta}" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <!-- Dosya zaman makinesi -->
+          <Border Grid.Row="2" Classes="divider-top" Padding="12,10">
+            <StackPanel Spacing="6">
+              <TextBlock Classes="section" Text="{l:Loc 'HOW DID THIS FILE LOOK?', 'BU DOSYA NASIL GÖRÜNÜYORDU?'}" />
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBox PlaceholderText="{l:Loc 'path/to/file.cs', 'yol/dosya.cs'}" Text="{Binding FileQuery}" FontSize="12" />
+                <Button Grid.Column="1" Margin="6,0,0,0" Content="{l:Loc 'Find', 'Bul'}" Command="{Binding LookupFileCommand}" />
+              </Grid>
+              <ListBox Classes="rounded" MaxHeight="150" ItemsSource="{Binding FileVersions}" SelectedItem="{Binding SelectedVersion}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="vm:FileVersionItem">
+                    <Grid ColumnDefinitions="*,Auto" Margin="2,4">
+                      <TextBlock Text="{Binding Time}" FontSize="12" />
+                      <TextBlock Grid.Column="1" Classes="mono meta" Text="{Binding State}" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="1" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+      <!-- Değişen dosyalar -->
+      <Border Grid.Column="2" Classes="panel">
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+          <StackPanel Margin="14,12,14,6" Spacing="8">
+            <Border Background="{DynamicResource Chrono.Input}" CornerRadius="7" Padding="2" HorizontalAlignment="Left">
+              <StackPanel Orientation="Horizontal">
+                <RadioButton Classes="segment" GroupName="compare" IsChecked="{Binding CompareWithCurrent}" Content="{l:Loc 'vs now', 'şimdiyle'}" />
+                <RadioButton Classes="segment" GroupName="compare" IsChecked="{Binding CompareWithPrevious}" Content="{l:Loc 'vs previous', 'öncekiyle'}" />
+              </StackPanel>
+            </Border>
+            <TextBlock Classes="meta" Text="{Binding CompareTitle}" TextWrapping="Wrap" />
+          </StackPanel>
+          <ProgressBar Grid.Row="1" IsIndeterminate="True" IsVisible="{Binding IsLoading}" Margin="14,0" />
+          <ListBox Grid.Row="2" Classes="rounded" ItemsSource="{Binding Changes}" SelectedItem="{Binding SelectedChange}">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="vm:SnapshotChangeItem">
+                <Grid ColumnDefinitions="18,*" Height="26" ToolTip.Tip="{Binding Path}">
+                  <TextBlock Classes="mono" Text="{Binding Letter}" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"
+                             Foreground="{Binding BrushKey, Converter={x:Static infra:BrushKeyConverter.Instance}}" />
+                  <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" ClipToBounds="True">
+                    <TextBlock Text="{Binding FileName}" />
+                    <TextBlock Classes="meta" Text="{Binding Directory}" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <Border Grid.Row="3" Classes="divider-top" Padding="12,10" IsVisible="{Binding HasSelection}">
+            <StackPanel Spacing="8">
+              <Button HorizontalAlignment="Stretch" Command="{Binding RestoreSelectedFileCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                  <c:IconView Data="{StaticResource Icon.Undo}" Width="14" Height="14" Foreground="{DynamicResource Chrono.Safe}" />
+                  <TextBlock Text="{l:Loc 'Restore this file', 'Bu dosyayı geri yükle'}" />
+                </StackPanel>
+              </Button>
+              <Button HorizontalAlignment="Stretch" Classes="time" Command="{Binding RestoreAllCommand}">
+                <TextBlock Text="{l:Loc 'Restore all files from this moment…', 'Tüm dosyaları bu andan geri yükle…'}" HorizontalAlignment="Center" Foreground="{DynamicResource Chrono.Time}" />
+              </Button>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="3" Background="{DynamicResource Chrono.BorderSubtle}" />
+
+      <!-- Diff / dosya içeriği -->
+      <Border Grid.Column="4" Classes="panel">
+        <Panel>
+          <views:DiffView DataContext="{Binding Diff}" IsVisible="{Binding $parent[UserControl].((vm:TimeMachineViewModel)DataContext).Diff, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          <Grid RowDefinitions="Auto,*" IsVisible="{Binding SelectedVersion, Converter={x:Static ObjectConverters.IsNotNull}}" Background="{DynamicResource Chrono.Panel}">
+            <Grid ColumnDefinitions="*,Auto" Margin="12,8">
+              <TextBlock VerticalAlignment="Center">
+                <Run Text="{Binding FileQuery}" FontWeight="SemiBold" /><Run Text="{l:Loc '  as of  ', '  ·  '}" Foreground="{DynamicResource Chrono.TextTertiary}" /><Run Text="{Binding SelectedVersion.Time}" /><Run Text="{l:Loc '', ' anındaki hâli'}" Foreground="{DynamicResource Chrono.TextTertiary}" />
+              </TextBlock>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                <Button Content="{l:Loc 'Restore this version', 'Bu sürümü geri yükle'}" Command="{Binding RestoreVersionCommand}" />
+                <Button Classes="icon" Command="{Binding LookupFileCommand}" ToolTip.Tip="{l:Loc 'Refresh', 'Yenile'}">
+                  <c:IconView Data="{StaticResource Icon.Fetch}" Width="14" Height="14" />
+                </Button>
+              </StackPanel>
+            </Grid>
+            <TextBox Grid.Row="1" Classes="mono" Text="{Binding VersionContent}" IsReadOnly="True" AcceptsReturn="True" BorderThickness="0" CornerRadius="0" />
+          </Grid>
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                      IsVisible="{Binding ShowEmptyDiff}">
+            <c:IconView Data="{StaticResource Icon.Clock}" Width="36" Height="36" Foreground="{DynamicResource Chrono.TextTertiary}" />
+            <TextBlock Classes="secondary" Text="{l:Loc 'Pick a snapshot to see what changed.', 'Neyin değiştiğini görmek için bir anlık görüntü seçin.'}" HorizontalAlignment="Center" />
+          </StackPanel>
+        </Panel>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

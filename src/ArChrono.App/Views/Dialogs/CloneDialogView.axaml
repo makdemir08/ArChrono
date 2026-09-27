@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ArChrono.App.ViewModels.Dialogs"
+             xmlns:l="using:ArChrono.App.Localization"
+             x:Class="ArChrono.App.Views.Dialogs.CloneDialogView"
+             x:DataType="vm:CloneDialogViewModel">
+  <StackPanel Margin="22,6,22,20" Spacing="12">
+    <StackPanel Spacing="6">
+      <TextBlock Classes="meta" Text="{l:Loc 'Repository URL', 'Depo URL\'si'}" />
+      <TextBox Text="{Binding Url}" PlaceholderText="{l:Loc 'https://github.com/org/repo.git or git@github.com:org/repo.git', 'https://github.com/org/repo.git veya git@github.com:org/repo.git'}" />
+    </StackPanel>
+    <StackPanel Spacing="6">
+      <TextBlock Classes="meta" Text="{l:Loc 'Parent folder', 'Üst klasör'}" />
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBox Text="{Binding ParentFolder}" />
+        <Button Grid.Column="1" Margin="8,0,0,0" Content="{l:Loc 'Browse…', 'Gözat…'}" Command="{Binding BrowseCommand}" />
+      </Grid>
+      <TextBlock Classes="meta">
+        <Run Text="{l:Loc 'Will be cloned into ', 'Klonlanacağı yer: '}" /><Run Text="{Binding Destination}" Foreground="{DynamicResource Chrono.TextSecondary}" />
+      </TextBlock>
+    </StackPanel>
+    <TextBlock Classes="danger" FontSize="12" Text="{Binding Error}" IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+    <TextBlock Classes="meta" TextWrapping="Wrap" Text="{l:Loc 'Sign-in uses your Git credential helper or SSH agent. ArChrono never stores SSH keys.', 'Oturum açma, Git kimlik bilgisi yardımcınızı veya SSH agent\'ınızı kullanır. ArChrono SSH anahtarlarını asla saklamaz.'}" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="{l:Loc 'Cancel', 'İptal'}" Command="{Binding CancelCommand}" />
+      <Button Classes="primary" Content="{l:Loc 'Clone', 'Klonla'}" Command="{Binding ConfirmCommand}" IsDefault="True" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>
